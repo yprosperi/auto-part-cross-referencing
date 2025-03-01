@@ -1,22 +1,34 @@
-// Sample mock data (we will fetch real data from a database or API)
-const mockPartsData = [
-    { partNumber: 'A123', description: 'Brake Pad', manufacturer: 'Brand A', compatible: ['Model X', 'Model Y'] },
-    { partNumber: 'B456', description: 'Oil Filter', manufacturer: 'Brand B', compatible: ['Model Z'] },
-    { partNumber: 'C789', description: 'Air Filter', manufacturer: 'Brand C', compatible: ['Model X', 'Model Z'] },
-];
+// Load data from JSON file
+let partsData = [];
+fetch('car_parts_data2.json')
+    .then(response => response.json())
+    .then(data => partsData = data)
+    .catch(error => console.error('Error loading parts data:', error));
 
 // Function to handle the search
 function searchParts() {
     const searchInput = document.getElementById('searchInput').value.toUpperCase();
     const resultsContainer = document.getElementById('resultsContainer');
-    const filteredParts = mockPartsData.filter(part => part.partNumber.includes(searchInput));
+    
+    // Filter by exact part number match
+    let filteredParts = partsData.filter(part => part['Part Number'].includes(searchInput));
+    
+    // If no exact match, try finding similar descriptions
+    if (filteredParts.length === 0) {
+        filteredParts = partsData.filter(part => part.Description.toUpperCase().includes(searchInput));
+    }
+    
+    // If still no match, try finding similar manufacturers
+    if (filteredParts.length === 0) {
+        filteredParts = partsData.filter(part => part.Manufacturer.toUpperCase().includes(searchInput));
+    }
 
     // Clear previous results
     resultsContainer.innerHTML = '';
 
     // If no results found
     if (filteredParts.length === 0) {
-        resultsContainer.innerHTML = '<p>No results found. Try a different part number.</p>';
+        resultsContainer.innerHTML = '<p>No results found. Try a different part number, description, or manufacturer.</p>';
         return;
     }
 
@@ -25,9 +37,8 @@ function searchParts() {
     filteredParts.forEach(part => {
         const li = document.createElement('li');
         li.innerHTML = `
-            <h3>${part.description} (${part.manufacturer})</h3>
-            <p>Part Number: ${part.partNumber}</p>
-            <p>Compatible Models: ${part.compatible.join(', ')}</p>
+            <h3>${part.Description} (${part.Manufacturer})</h3>
+            <p>Part Number: ${part['Part Number']}</p>
         `;
         ul.appendChild(li);
     });
