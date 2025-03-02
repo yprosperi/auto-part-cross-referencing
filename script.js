@@ -1,6 +1,6 @@
 // Load data from updated JSON file
 let partsData = [];
-fetch('car_parts_data_updated.json')
+fetch('assets/car_parts_data_updated.json') // Ensure JSON is in /assets/
     .then(response => response.json())
     .then(data => partsData = data)
     .catch(error => console.error('Error loading parts data:', error));
@@ -8,6 +8,7 @@ fetch('car_parts_data_updated.json')
 // Function to handle the search
 function searchParts() {
     const searchInput = document.getElementById('searchInput').value.toUpperCase();
+    const sortOption = document.getElementById('sortOption').value;
     const resultsContainer = document.getElementById('resultsContainer');
     
     // Show loading indicator
@@ -29,6 +30,13 @@ function searchParts() {
     // If still no match, try filtering by vehicle (2012 Honda Civic Si)
     if (filteredParts.length === 0) {
         filteredParts = partsData.filter(part => part.Vehicle.toUpperCase().includes(searchInput));
+    }
+    
+    // Sort results based on selected filter
+    if (sortOption === 'manufacturer') {
+        filteredParts.sort((a, b) => a.Manufacturer.localeCompare(b.Manufacturer));
+    } else if (sortOption === 'description') {
+        filteredParts.sort((a, b) => a.Description.localeCompare(b.Description));
     }
 
     // Clear previous results
