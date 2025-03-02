@@ -9,55 +9,7 @@ fetch('assets/car_parts_data_updated.json') // Ensure JSON is in /assets/
 function searchParts() {
     const searchInput = document.getElementById('searchInput').value.toUpperCase();
     const sortOption = document.getElementById('sortOption').value;
-    const resultsContainer = document.getElementById('resultsContainer');
-    
-    // Show loading indicator
-    resultsContainer.innerHTML = '<p>Loading results...</p>';
-    
-    // Filter by exact part number match
-    let filteredParts = partsData.filter(part => part['Part Number'].includes(searchInput));
-    
-    // If no exact match, try finding similar descriptions
-    if (filteredParts.length === 0) {
-        filteredParts = partsData.filter(part => part.Description.toUpperCase().includes(searchInput));
-    }
-    
-    // If still no match, try finding similar manufacturers
-    if (filteredParts.length === 0) {
-        filteredParts = partsData.filter(part => part.Manufacturer.toUpperCase().includes(searchInput));
-    }
-    
-    // If still no match, try filtering by vehicle (2012 Honda Civic Si)
-    if (filteredParts.length === 0) {
-        filteredParts = partsData.filter(part => part.Vehicle.toUpperCase().includes(searchInput));
-    }
-    
-    // Sort results based on selected filter
-    if (sortOption === 'manufacturer') {
-        filteredParts.sort((a, b) => a.Manufacturer.localeCompare(b.Manufacturer));
-    } else if (sortOption === 'description') {
-        filteredParts.sort((a, b) => a.Description.localeCompare(b.Description));
-    }
 
-    // Clear previous results
-    resultsContainer.innerHTML = '';
-
-    // If no results found
-    if (filteredParts.length === 0) {
-        resultsContainer.innerHTML = '<p>No results found. Try a different part number, description, or manufacturer.</p>';
-        return;
-    }
-
-    // Display search results
-    const ul = document.createElement('ul');
-    filteredParts.forEach(part => {
-        const li = document.createElement('li');
-        li.innerHTML = `
-            <h3>${part.Description} (${part.Manufacturer})</h3>
-            <p>Part Number: ${part['Part Number']}</p>
-            <p>Vehicle: ${part.Vehicle}</p>
-        `;
-        ul.appendChild(li);
-    });
-    resultsContainer.appendChild(ul);
+    // Redirect to results page with query parameters
+    window.location.href = `results.html?query=${encodeURIComponent(searchInput)}&sort=${encodeURIComponent(sortOption)}`;
 }
