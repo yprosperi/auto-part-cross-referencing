@@ -1,15 +1,73 @@
-// Load data from updated JSON file
-let partsData = [];
-fetch('assets/car_parts_data_updated.json') // Ensure JSON is in /assets/
-    .then(response => response.json())
-    .then(data => partsData = data)
-    .catch(error => console.error('Error loading parts data:', error));
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Results</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Search Results</h1>
+        <div id="resultsContainer">
+            <p>Loading results...</p>
+        </div>
+        <a href="index.html">Back to Search</a>
+    </div>
+    <script>
+        // Extract search query from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const searchQuery = urlParams.get('query');
+        const sortOption = urlParams.get('sort');
 
-// Function to handle the search
-function searchParts() {
-    const searchInput = document.getElementById('searchInput').value.toUpperCase();
-    const sortOption = document.getElementById('sortOption').value;
-    
-    // Redirect to results page with query parameter
-    window.location.href = `results.html?query=${encodeURIComponent(searchInput)}&sort=${encodeURIComponent(sortOption)}`;
-}
+        // Load data and display results
+        fetch('assets/car_parts_data_updated.json')
+            .then(response => response.json())
+            .then(partsData => {
+                let filteredParts = partsData.filter(part => part['Part Number'].includes(searchQuery.toUpperCase()));
+                
+                if (filteredParts.length === 0) {
+                    filteredParts = partsData.filter(part => part.Description.toUpperCase().includes(searchQuery.toUpperCase()));
+                }
+                
+                if (filteredParts.length === 0) {
+                    filteredParts = partsData.filter(part => part.Manufacturer.toUpperCase().includes(searchQuery.toUpperCase()));
+                }
+                
+                if (filteredParts.length === 0) {
+                    filteredParts = partsData.filter(part => part.Vehicle.toUpperCase().includes(searchQuery.toUpperCase()));
+                }
+                
+                if (sortOption === 'manufacturer') {
+                    filteredParts.sort((a, b) => a.Manufacturer.localeCompare(b.Manufacturer));
+                } else if (sortOption === 'description') {
+                    filteredParts.sort((a, b) => a.Description.localeCompare(b.Description));
+                }
+
+                const resultsContainer = document.getElementById('resultsContainer');
+                resultsContainer.innerHTML = '';
+
+                if (filteredParts.length === 0) {
+                    resultsContainer.innerHTML = '<p>No results found.</p>';
+                    return;
+                }
+
+                const ul = document.createElement('ul');
+                filteredParts.forEach(part => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `
+                        <h3>${part.Description} (${part.Manufacturer})</h3>
+                        <p>Part Number: ${part['Part Number']}</p>
+                        <p>Vehicle: ${part.Vehicle}</p>
+                    `;
+                    ul.appendChild(li);
+                });
+                resultsContainer.appendChild(ul);
+            })
+            .catch(error => {
+                document.getElementById('resultsContainer').innerHTML = '<p>Error loading results.</p>';
+                console.error('Error:', error);
+            });
+    </script>
+</body>
+</html>
