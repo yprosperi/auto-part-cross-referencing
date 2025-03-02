@@ -7,7 +7,7 @@ console.log("Search Query:", searchQuery);
 console.log("Sort Option:", sortOption);
 
 // Load JSON Data
-fetch('assets/car_parts_data_updated.json')
+fetch('https://raw.githubusercontent.com/yprosperi/auto-part-cross-referencing/main/assets/car_parts_data_updated.json')
     .then(response => response.json())
     .then(partsData => {
         console.log("Data Loaded:", partsData); // Debugging Step
