@@ -1,69 +1,55 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Search Results</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <div class="container">
-        <h1>Search Results</h1>
-        <div id="resultsContainer">
-            <p>Loading results...</p>
-        </div>
-        <a href="index.html">Back to Search</a>
-    </div>
-    
-    <script>
-        // Extract search query from URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const searchQuery = urlParams.get('query');
-        const sortOption = urlParams.get('sort');
+// Extract search query from URL
+const urlParams = new URLSearchParams(window.location.search);
+const searchQuery = urlParams.get('query');
+const sortOption = urlParams.get('sort');
 
-        // Load JSON Data
-        fetch('assets/car_parts_data_updated.json')
-            .then(response => response.json())
-            .then(partsData => {
-                let filteredParts = partsData.filter(part => 
-                    part['Part Number'].toUpperCase().includes(searchQuery.toUpperCase()) ||
-                    part.Description.toUpperCase().includes(searchQuery.toUpperCase()) ||
-                    part.Manufacturer.toUpperCase().includes(searchQuery.toUpperCase()) ||
-                    part.Vehicle.toUpperCase().includes(searchQuery.toUpperCase())
-                );
+console.log("Search Query:", searchQuery);
+console.log("Sort Option:", sortOption);
 
-                // Apply sorting if selected
-                if (sortOption === 'manufacturer') {
-                    filteredParts.sort((a, b) => a.Manufacturer.localeCompare(b.Manufacturer));
-                } else if (sortOption === 'description') {
-                    filteredParts.sort((a, b) => a.Description.localeCompare(b.Description));
-                }
+// Load JSON Data
+fetch('assets/car_parts_data_updated.json')
+    .then(response => response.json())
+    .then(partsData => {
+        console.log("Data Loaded:", partsData); // Debugging Step
+        
+        let filteredParts = partsData.filter(part => 
+            part['Part Number'].toUpperCase().includes(searchQuery.toUpperCase()) ||
+            part.Description.toUpperCase().includes(searchQuery.toUpperCase()) ||
+            part.Manufacturer.toUpperCase().includes(searchQuery.toUpperCase()) ||
+            part.Vehicle.toUpperCase().includes(searchQuery.toUpperCase())
+        );
 
-                // Display results
-                const resultsContainer = document.getElementById('resultsContainer');
-                resultsContainer.innerHTML = '';
+        console.log("Filtered Parts:", filteredParts); // Debugging Step
 
-                if (filteredParts.length === 0) {
-                    resultsContainer.innerHTML = '<p>No results found.</p>';
-                    return;
-                }
+        // Apply sorting if selected
+        if (sortOption === 'manufacturer') {
+            filteredParts.sort((a, b) => a.Manufacturer.localeCompare(b.Manufacturer));
+        } else if (sortOption === 'description') {
+            filteredParts.sort((a, b) => a.Description.localeCompare(b.Description));
+        }
 
-                const ul = document.createElement('ul');
-                filteredParts.forEach(part => {
-                    const li = document.createElement('li');
-                    li.innerHTML = `
-                        <h3>${part.Description} (${part.Manufacturer})</h3>
-                        <p>Part Number: ${part['Part Number']}</p>
-                        <p>Vehicle: ${part.Vehicle}</p>
-                    `;
-                    ul.appendChild(li);
-                });
-                resultsContainer.appendChild(ul);
-            })
-            .catch(error => {
-                document.getElementById('resultsContainer').innerHTML = '<p>Error loading results.</p>';
-                console.error('Error:', error);
-            });
-    </script>
-</body>
-</html>
+        const resultsContainer = document.getElementById('resultsContainer');
+        resultsContainer.innerHTML = '';
+
+        if (filteredParts.length === 0) {
+            resultsContainer.innerHTML = '<p>No results found.</p>';
+            return;
+        }
+
+        const ul = document.createElement('ul');
+        filteredParts.forEach(part => {
+            const li = document.createElement('li');
+            li.innerHTML = `
+                <h3>${part.Description} (${part.Manufacturer})</h3>
+                <p>Part Number: ${part['Part Number']}</p>
+                <p>Vehicle: ${part.Vehicle}</p>
+            `;
+            ul.appendChild(li);
+        });
+        resultsContainer.appendChild(ul);
+    })
+    .catch(error => {
+        document.getElementById('resultsContainer').innerHTML = '<p>Error loading results.</p>';
+        console.error('Error:', error);
+    });
+
