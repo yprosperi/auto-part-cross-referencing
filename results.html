@@ -14,36 +14,32 @@
         </div>
         <a href="index.html">Back to Search</a>
     </div>
+    
     <script>
         // Extract search query from URL
         const urlParams = new URLSearchParams(window.location.search);
         const searchQuery = urlParams.get('query');
         const sortOption = urlParams.get('sort');
 
-        // Load data and display results
+        // Load JSON Data
         fetch('assets/car_parts_data_updated.json')
             .then(response => response.json())
             .then(partsData => {
-                let filteredParts = partsData.filter(part => part['Part Number'].includes(searchQuery.toUpperCase()));
-                
-                if (filteredParts.length === 0) {
-                    filteredParts = partsData.filter(part => part.Description.toUpperCase().includes(searchQuery.toUpperCase()));
-                }
-                
-                if (filteredParts.length === 0) {
-                    filteredParts = partsData.filter(part => part.Manufacturer.toUpperCase().includes(searchQuery.toUpperCase()));
-                }
-                
-                if (filteredParts.length === 0) {
-                    filteredParts = partsData.filter(part => part.Vehicle.toUpperCase().includes(searchQuery.toUpperCase()));
-                }
-                
+                let filteredParts = partsData.filter(part => 
+                    part['Part Number'].toUpperCase().includes(searchQuery.toUpperCase()) ||
+                    part.Description.toUpperCase().includes(searchQuery.toUpperCase()) ||
+                    part.Manufacturer.toUpperCase().includes(searchQuery.toUpperCase()) ||
+                    part.Vehicle.toUpperCase().includes(searchQuery.toUpperCase())
+                );
+
+                // Apply sorting if selected
                 if (sortOption === 'manufacturer') {
                     filteredParts.sort((a, b) => a.Manufacturer.localeCompare(b.Manufacturer));
                 } else if (sortOption === 'description') {
                     filteredParts.sort((a, b) => a.Description.localeCompare(b.Description));
                 }
 
+                // Display results
                 const resultsContainer = document.getElementById('resultsContainer');
                 resultsContainer.innerHTML = '';
 
