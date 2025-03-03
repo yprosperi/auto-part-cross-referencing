@@ -8,8 +8,9 @@ fetch('https://raw.githubusercontent.com/yprosperi/auto-part-cross-referencing/m
 // Function to handle the search and open a new page
 function searchParts() {
     const searchInput = document.getElementById('searchInput').value.toUpperCase();
-    const sortOption = document.getElementById('sortOption').value;
-
+   const sortOptionElement = document.getElementById('sortOption');
+const sortOption = sortOptionElement ? sortOptionElement.value : ""; // Default to empty string if not found
+    
     // Redirect to results page with query parameters in a new tab
     window.open(`results.html?query=${encodeURIComponent(searchInput)}&sort=${encodeURIComponent(sortOption)}`, '_blank');
 }
