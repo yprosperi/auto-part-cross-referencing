@@ -1,7 +1,5 @@
 /* General Styles */
 body {
-    /* General Styles */
-body {
     font-family: Arial, sans-serif;
     background: url('assets/car-manufacturers-bg.png') no-repeat center center fixed;
     background-size: cover;
@@ -27,6 +25,7 @@ h1 {
     color: #333;
 }
 
+/* Move search container to bottom */
 .search-container {
     position: absolute;
     bottom: 20px;
@@ -62,6 +61,7 @@ button:hover {
     background: #0056b3;
 }
 
+/* Results Container - Upper Right & Oval */
 .results-container {
     position: absolute;
     top: 10%;
@@ -110,9 +110,11 @@ button:hover {
 .back-btn:hover {
     background: #0056b3;
 }
+
+/* Retina Display - High-Resolution Background */
 @media only screen and (-webkit-min-device-pixel-ratio: 2),
        only screen and (min-resolution: 192dpi) {
     body {
-        background-image: url('assets/car-manufacturers-bg@2x.jpg'); /* Use a higher-res image */
+        background-image: url('assets/car-manufacturers-bg@2x.png'); /* Use a higher-res image */
     }
 }
