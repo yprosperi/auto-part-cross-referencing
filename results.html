@@ -9,17 +9,22 @@
 <body>
     <div class="container">
         <h1>Search Results</h1>
-        
+
+        <!-- Loading Spinner -->
+        <div class="loading-spinner" id="loadingSpinner">
+            <p>Loading results...</p>
+        </div>
+
         <!-- Results Box -->
         <div class="results-box">
             <div id="resultsContainer">
-                <p>Loading results...</p>
+                <!-- Search results will be displayed here -->
             </div>
         </div>
 
         <a href="index.html" class="back-btn">Back to Search</a>
     </div>
-    
+
     <script>
         // Extract search query from URL
         const urlParams = new URLSearchParams(window.location.search);
@@ -45,6 +50,11 @@
                 }
 
                 const resultsContainer = document.getElementById('resultsContainer');
+                const loadingSpinner = document.getElementById('loadingSpinner');
+
+                // Hide loading spinner when data is loaded
+                loadingSpinner.style.display = 'none';
+
                 resultsContainer.innerHTML = '';
 
                 if (filteredParts.length === 0) {
@@ -55,10 +65,11 @@
                 const ul = document.createElement('ul');
                 filteredParts.forEach(part => {
                     const li = document.createElement('li');
+                    li.classList.add('result-item');
                     li.innerHTML = `
                         <h3>${part.Description} (${part.Manufacturer})</h3>
-                        <p>Part Number: ${part['Part Number']}</p>
-                        <p>Vehicle: ${part.Vehicle}</p>
+                        <p><strong>Part Number:</strong> ${part['Part Number']}</p>
+                        <p><strong>Vehicle:</strong> ${part.Vehicle}</p>
                     `;
                     ul.appendChild(li);
                 });
