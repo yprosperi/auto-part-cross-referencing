@@ -17,7 +17,7 @@
 
         <!-- Results Box -->
         <div class="results-box">
-            <div id="resultsContainer">
+            <div id="resultsContainer" aria-live="polite">
                 <!-- Search results will be displayed here -->
             </div>
         </div>
@@ -58,7 +58,7 @@
                 resultsContainer.innerHTML = '';
 
                 if (filteredParts.length === 0) {
-                    resultsContainer.innerHTML = '<p>No results found.</p>';
+                    resultsContainer.innerHTML = '<p>No results found. Please try refining your search.</p>';
                     return;
                 }
 
@@ -76,7 +76,7 @@
                 resultsContainer.appendChild(ul);
             })
             .catch(error => {
-                document.getElementById('resultsContainer').innerHTML = '<p>Error loading results.</p>';
+                document.getElementById('resultsContainer').innerHTML = '<p>Error loading results. Please try again later.</p>';
                 console.error('Error:', error);
             });
     </script>
