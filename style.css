@@ -10,6 +10,7 @@ body {
   background-color: #111;
   color: white;
   text-align: center;
+  line-height: 1.6;  /* Improves readability */
 }
 
 /* Background and container style */
@@ -23,6 +24,9 @@ body {
   align-items: center;
   position: relative;
   overflow: hidden;
+  padding: 20px;
+  max-width: 1000px;
+  margin: 0 auto;
 }
 
 /* Logo Styling */
@@ -67,6 +71,7 @@ body {
 .search-box input[type="text"]:focus {
   background-color: rgba(255, 255, 255, 0.3);
   transform: scale(1.05); /* Slightly enlarge the text input on focus */
+  border: 2px solid #ff5a5f; /* Optional: Adds a red border when focused */
 }
 
 .search-box button {
@@ -76,12 +81,13 @@ body {
   padding: 10px 15px;
   border-radius: 20px;
   cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
+  transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
 }
 
 .search-box button:hover {
   background-color: #ff3b40;
   transform: scale(1.05);
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); /* Adds shadow effect on hover */
 }
 
 /* Footer with icons */
