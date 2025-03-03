@@ -11,25 +11,31 @@
         <h1>Auto Part Cross-Referencing Tool</h1>
 
         <!-- Search Form -->
-     <div class="search-container">
-    <input type="text" id="searchInput" placeholder="Enter Part Number or Vehicle Info">
-    
-    <!-- Sorting Dropdown -->
-    <select id="sortOption">
-        <option value="">Sort by...</option>
-        <option value="manufacturer">Manufacturer</option>
-        <option value="description">Description</option>
-    </select>
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Enter Part Number or Vehicle Info">
+            
+            <!-- Sorting Dropdown -->
+            <select id="sortOption">
+                <option value="">Sort by...</option>
+                <option value="manufacturer">Manufacturer</option>
+                <option value="description">Description</option>
+            </select>
 
-    <button onclick="searchParts()">Search</button>
-</div>
+            <button onclick="searchParts()">Search</button>
+        </div>
 
         <!-- Results Section -->
         <div class="results-container" id="resultsContainer">
             <!-- Results will appear here -->
+        </div>
+
+        <!-- Search Button (visible after results are shown) -->
+        <div id="goBackContainer" class="go-back-container">
+            <button onclick="goBack()">Go Back to Search</button>
         </div>
     </div>
 
     <script src="script.js"></script>
 </body>
 </html>
+
