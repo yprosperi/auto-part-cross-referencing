@@ -102,3 +102,9 @@ button:hover {
 .back-btn:hover {
     background: #0056b3;
 }
+@media only screen and (-webkit-min-device-pixel-ratio: 2),
+       only screen and (min-resolution: 192dpi) {
+    body {
+        background-image: url('assets/car-manufacturers-bg@2x.jpg'); /* Use a higher-res image */
+    }
+}
