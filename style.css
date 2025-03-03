@@ -84,3 +84,48 @@ li {
 li:hover {
     background: #f0f0f0;
 }
+/* Results Box */
+.results-box {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    width: 80%;
+    max-width: 600px;
+    margin: 20px auto;
+    text-align: left;
+}
+
+.results-box ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.results-box li {
+    background: #f4f4f4;
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 5px;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+}
+
+.results-box li:hover {
+    background: #e0e0e0;
+}
+
+/* Back Button */
+.back-btn {
+    display: block;
+    width: fit-content;
+    margin: 20px auto;
+    padding: 10px 15px;
+    background: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.back-btn:hover {
+    background: #0056b3;
+}
