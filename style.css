@@ -1,5 +1,4 @@
 /* General Styles */
-/* General reset for consistency */
 * {
   margin: 0;
   padding: 0;
@@ -31,11 +30,12 @@ body {
   width: 250px;
   height: auto;
   margin-bottom: 20px;
-  transition: transform 0.3s ease;
+  transition: transform 0.3s ease, rotate 0.3s ease; /* Added rotation effect */
 }
 
 .logo:hover {
   transform: scale(1.1);
+  rotate: 5deg; /* Adds a subtle rotation effect */
 }
 
 /* Search Box Styling */
@@ -61,11 +61,12 @@ body {
   flex: 1;
   padding: 10px;
   font-size: 18px;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
 .search-box input[type="text"]:focus {
   background-color: rgba(255, 255, 255, 0.3);
+  transform: scale(1.05); /* Slightly enlarge the text input on focus */
 }
 
 .search-box button {
@@ -97,11 +98,12 @@ body {
   color: white;
   font-size: 18px;
   cursor: pointer;
-  transition: color 0.3s ease;
+  transition: color 0.3s ease, transform 0.3s ease;
 }
 
 .footer .icon:hover {
   color: #ff5a5f;
+  transform: scale(1.1); /* Add scale effect on hover */
 }
 
 /* Retina Display - High-Resolution Background */
