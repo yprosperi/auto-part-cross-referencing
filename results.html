@@ -9,10 +9,15 @@
 <body>
     <div class="container">
         <h1>Search Results</h1>
-        <div id="resultsContainer">
-            <p>Loading results...</p>
+        
+        <!-- Results Box -->
+        <div class="results-box">
+            <div id="resultsContainer">
+                <p>Loading results...</p>
+            </div>
         </div>
-        <a href="index.html">Back to Search</a>
+
+        <a href="index.html" class="back-btn">Back to Search</a>
     </div>
     
     <script>
@@ -21,23 +26,16 @@
         const searchQuery = urlParams.get('query');
         const sortOption = urlParams.get('sort');
 
-        console.log("Search Query:", searchQuery);
-        console.log("Sort Option:", sortOption);
-
         // Load JSON Data
         fetch('https://raw.githubusercontent.com/yprosperi/auto-part-cross-referencing/main/assets/car_parts_data_updated.json')
             .then(response => response.json())
             .then(partsData => {
-                console.log("Data Loaded:", partsData); // Debugging Step
-                
                 let filteredParts = partsData.filter(part => 
                     part['Part Number'].toUpperCase().includes(searchQuery.toUpperCase()) ||
                     part.Description.toUpperCase().includes(searchQuery.toUpperCase()) ||
                     part.Manufacturer.toUpperCase().includes(searchQuery.toUpperCase()) ||
                     part.Vehicle.toUpperCase().includes(searchQuery.toUpperCase())
                 );
-                
-                console.log("Filtered Parts:", filteredParts); // Debugging Step
 
                 // Apply sorting if selected
                 if (sortOption === 'manufacturer') {
@@ -73,5 +71,3 @@
     </script>
 </body>
 </html>
-
-
