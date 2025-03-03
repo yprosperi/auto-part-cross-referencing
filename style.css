@@ -50,6 +50,7 @@ body {
   justify-content: space-between;
   align-items: center;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.6);
+  transition: width 0.3s ease;
 }
 
 .search-box input[type="text"] {
@@ -60,6 +61,11 @@ body {
   flex: 1;
   padding: 10px;
   font-size: 18px;
+  transition: background-color 0.3s ease;
+}
+
+.search-box input[type="text"]:focus {
+  background-color: rgba(255, 255, 255, 0.3);
 }
 
 .search-box button {
@@ -69,11 +75,12 @@ body {
   padding: 10px 15px;
   border-radius: 20px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .search-box button:hover {
   background-color: #ff3b40;
+  transform: scale(1.05);
 }
 
 /* Footer with icons */
@@ -103,4 +110,38 @@ body {
     body {
         background-image: url('assets/car-manufacturers-bg@2x.png'); /* Use a higher-res image */
     }
+}
+
+/* Mobile-First Adjustments */
+/* Styles for mobile devices */
+@media (max-width: 768px) {
+  .search-box {
+    width: 80%;
+  }
+
+  .logo {
+    width: 150px;
+  }
+}
+
+@media (max-width: 480px) {
+  .search-box {
+    width: 90%;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .logo {
+    width: 120px;
+  }
+
+  .search-box input[type="text"] {
+    font-size: 16px;
+    padding: 8px;
+  }
+
+  .search-box button {
+    width: 100%;
+    margin-top: 10px;
+  }
 }
