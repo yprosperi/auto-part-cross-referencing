@@ -8,9 +8,9 @@
 body {
   font-family: 'Broadway', sans-serif;
   background-color: #ffffff;
-  color: #333;
+  color: #ffffff;
   text-align: center;
-  line-height: 1.6;  /* Improves readability */
+  line-height: 2.0;  /* Improves readability */
 }
 
 /* Background and container style */
