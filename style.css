@@ -20,7 +20,7 @@ body {
   height: 100vh;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start; /* Aligns items to the top */
+  justify-content: flex-start; /* Aligns items to the bottom */
   align-items: center;
   position: relative;
   overflow: hidden;
