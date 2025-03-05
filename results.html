@@ -10,8 +10,6 @@
     <div class="container">
         <h1>Search Results</h1>
 
-        <a href="index.html" class="back-btn">🔙 Back to Search</a>
-        
         <!-- Loading Spinner -->
         <div class="loading-spinner" id="loadingSpinner">
             <p>Loading results...</p>
@@ -22,7 +20,8 @@
             <!-- Search results will be displayed here -->
         </div>
 
-        <a href="index.html" class="back-btn">Back to Search</a>
+        <!-- Back to Search Button -->
+        <a href="index.html" class="back-btn">🔙 Back to Search</a>
     </div>
 
     <script>
@@ -91,7 +90,7 @@
                 return;
             }
 
-            // Step 3: Display all part numbers under the matched description
+            // Step 3: Display all part numbers under the matched description, including vehicle info
             matchedParts.forEach(entry => {
                 const section = document.createElement('div');
                 section.innerHTML = `<h2>${entry.Description}</h2>`;
@@ -99,7 +98,11 @@
                 const ul = document.createElement('ul');
                 entry.Parts.forEach(part => {
                     const li = document.createElement('li');
-                    li.innerHTML = `<strong>Part Number:</strong> ${part["Part Number"]} <br> <strong>Retailer:</strong> ${part["Parts Retailer"]}`;
+                    li.innerHTML = `
+                        <strong>Part Number:</strong> ${part["Part Number"]} <br>
+                        <strong>Retailer:</strong> ${part["Parts Retailer"]} <br>
+                        <strong>Vehicle:</strong> ${part["Vehicle"]}
+                    `;
                     ul.appendChild(li);
                 });
 
