@@ -3,34 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Auto Part Cross-Referencing Tool</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="script.js" defer></script> <!-- Use defer to ensure the script loads after the DOM -->
+    <title>Parts Number Tab</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        input {
+            margin-bottom: 10px;
+            padding: 5px;
+            width: 100%;
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Auto Part Cross-Referencing Tool</h1>
+    <h2>Parts Number Lookup</h2>
+    <input type="text" id="searchInput" placeholder="Search by Part Number, Description, or Manufacturer" onkeyup="filterTable()">
+    <table id="partsTable">
+        <thead>
+            <tr>
+                <th>Description</th>
+                <th>Manufacturer</th>
+                <th>Part Number</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            fetch('Cross_Reference_Table.json') // Load JSON file
+                .then(response => response.json())
+                .then(data => {
+                    const tableBody = document.querySelector("#partsTable tbody");
+                    data.forEach(part => {
+                        const row = document.createElement("tr");
+                        row.innerHTML = `
+                            <td>${part.description || "N/A"}</td>
+                            <td>${part.manufacturer || "N/A"}</td>
+                            <td>${part.partNumber || "N/A"}</td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+                })
+                .catch(error => console.error('Error loading parts data:', error));
+        });
 
-        <!-- Search Form -->
-        <div class="search-container">
-            <input type="text" id="searchInput" placeholder="Enter Part Number or Vehicle Info">
+        function filterTable() {
+            const searchValue = document.getElementById("searchInput").value.toUpperCase();
+            const rows = document.querySelectorAll("#partsTable tbody tr");
             
-            <!-- Sorting Dropdown -->
-            <select id="sortOption">
-                <option value="">Sort by...</option>
-                <option value="manufacturer">Manufacturer</option>
-                <option value="description">Description</option>
-                <option value="part number">Part Number</option>
-            </select>
-
-            <button id="searchButton">Search</button>
-        </div>
-
-        <!-- Results Section -->
-        <div class="results-container" id="resultsContainer">
-            <!-- Results will appear here -->
-        </div>
-    </div>
+            rows.forEach(row => {
+                const textContent = row.innerText.toUpperCase();
+                row.style.display = textContent.includes(searchValue) ? "" : "none";
+            });
+        }
+    </script>
 </body>
 </html>
 
