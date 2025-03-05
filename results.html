@@ -26,65 +26,67 @@
     </div>
 
     <script>
-        // Extract search query and sorting option from URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const searchQuery = urlParams.get('query') ? urlParams.get('query').toUpperCase() : "";
-        const sortOption = urlParams.get('sort');
+    // Extract search query from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const searchQuery = urlParams.get('query');
+    const sortOption = urlParams.get('sort');
 
-        // Load JSON Data
-        fetch('https://raw.githubusercontent.com/yprosperi/auto-part-cross-referencing/main/assets/cross_reference.json')
-            .then(response => response.json())
-            .then(partsData => {
-                console.log("Loaded Parts Data:", partsData); // Debugging
+    if (!searchQuery) {
+        document.getElementById('resultsContainer').innerHTML = '<p>Error: No search query provided.</p>';
+        throw new Error("Search query is missing from URL parameters.");
+    }
 
-                // Normalize JSON keys (change as needed to match actual JSON structure)
-                let filteredParts = partsData.filter(part => 
-                    part['Part Number']?.toUpperCase().includes(searchQuery) ||
-                    part.Description?.toUpperCase().includes(searchQuery) ||
-                    part.Manufacturer?.toUpperCase().includes(searchQuery) ||
-                    (part.Vehicle ? part.Vehicle.toUpperCase().includes(searchQuery) : false)
-                );
+    console.log("Search Query:", searchQuery);
+    console.log("Sort Option:", sortOption);
 
-                // Apply sorting if selected
-                if (sortOption === 'manufacturer') {
-                    filteredParts.sort((a, b) => (a.Manufacturer || "").localeCompare(b.Manufacturer || ""));
-                } else if (sortOption === 'description') {
-                    filteredParts.sort((a, b) => (a.Description || "").localeCompare(b.Description || ""));
-                }
+    // Load JSON Data
+    fetch('https://raw.githubusercontent.com/yprosperi/auto-part-cross-referencing/main/assets/cross_reference.json')
+        .then(response => response.json())
+        .then(partsData => {
+            console.log("Data Loaded:", partsData); // Debugging Step
+            
+            let filteredParts = partsData.filter(part => 
+                part['Part Number']?.toUpperCase().includes(searchQuery.toUpperCase()) ||
+                part.Description?.toUpperCase().includes(searchQuery.toUpperCase()) ||
+                part.Manufacturer?.toUpperCase().includes(searchQuery.toUpperCase()) ||
+                part.Vehicle?.toUpperCase().includes(searchQuery.toUpperCase())
+            );
 
-                const resultsContainer = document.getElementById('resultsContainer');
-                const loadingSpinner = document.getElementById('loadingSpinner');
+            console.log("Filtered Parts:", filteredParts); // Debugging Step
 
-                // Hide loading spinner when data is loaded
-                loadingSpinner.style.display = 'none';
+            // Apply sorting if selected
+            if (sortOption === 'manufacturer') {
+                filteredParts.sort((a, b) => a.Manufacturer.localeCompare(b.Manufacturer));
+            } else if (sortOption === 'description') {
+                filteredParts.sort((a, b) => a.Description.localeCompare(b.Description));
+            }
 
-                // Clear previous results
-                resultsContainer.innerHTML = '';
+            const resultsContainer = document.getElementById('resultsContainer');
+            resultsContainer.innerHTML = '';
+            document.getElementById('loadingSpinner').style.display = "none"; // Hide spinner
 
-                if (filteredParts.length === 0) {
-                    resultsContainer.innerHTML = '<p>No results found. Please try refining your search.</p>';
-                    return;
-                }
+            if (filteredParts.length === 0) {
+                resultsContainer.innerHTML = '<p>No results found.</p>';
+                return;
+            }
 
-                // Create a results list
-                const ul = document.createElement('ul');
-                filteredParts.forEach(part => {
-                    const li = document.createElement('li');
-                    li.classList.add('result-item');
-                    li.innerHTML = `
-                        <h3>${part.Description || "No Description"} (${part.Manufacturer || "Unknown"})</h3>
-                        <p><strong>Part Number:</strong> ${part['Part Number'] || "N/A"}</p>
-                        <p><strong>Vehicle:</strong> ${part.Vehicle || "N/A"}</p>
-                    `;
-                    ul.appendChild(li);
-                });
-
-                resultsContainer.appendChild(ul);
-            })
-            .catch(error => {
-                document.getElementById('resultsContainer').innerHTML = '<p>Error loading results. Please try again later.</p>';
-                console.error('Error:', error);
+            const ul = document.createElement('ul');
+            filteredParts.forEach(part => {
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    <h3>${part.Description} (${part.Manufacturer})</h3>
+                    <p>Part Number: ${part['Part Number']}</p>
+                    <p>Vehicle: ${part.Vehicle}</p>
+                `;
+                ul.appendChild(li);
             });
+            resultsContainer.appendChild(ul);
+        })
+        .catch(error => {
+            document.getElementById('resultsContainer').innerHTML = '<p>Error loading results.</p>';
+            console.error('Error:', error);
+        });
     </script>
 </body>
 </html>
+
