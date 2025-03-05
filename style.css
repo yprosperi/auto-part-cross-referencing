@@ -1,161 +1,120 @@
 /* General Styles */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
 body {
-  font-family: 'Arial', sans-serif;
-  background-color: #111;
-  color: white;
-  text-align: center;
-  line-height: 1.6;  /* Improves readability */
+    font-family: Arial, sans-serif;
+    background: url('assets/car-manufacturers-bg.png') no-repeat center center fixed;
+    background-size: cover;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    height: 100vh;
 }
 
-/* Background and container style */
 .container {
-  background: url('assets/car-manufacturers-bg.png') no-repeat center center fixed;
-  background-size: cover;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start; /* Aligns items to the bottom */
-  align-items: center;
-  position: relative;
-  overflow: hidden;
-  padding: 20px;
-  max-width: 1000px;
-  margin: 0 auto;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    width: 400px;
+    text-align: center;
 }
 
-/* Logo Styling */
-.logo {
-  width: 250px;
-  height: auto;
-  margin-bottom: 20px;
-  transition: transform 0.3s ease, rotate 0.3s ease; /* Added rotation effect */
+h1 {
+    color: #333;
 }
 
-.logo:hover {
-  transform: scale(1.1);
-  rotate: 5deg; /* Adds a subtle rotation effect */
+/* Move search container higher */
+.search-container {
+    position: absolute;
+    bottom: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 400px;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
 }
 
-/* Search Box Styling */
-.search-box {
-  background-color: rgba(255, 255, 255, 0.2);
-  padding: 12px 20px;
-  border-radius: 25px;
-  width: 60%;
-  max-width: 500px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.6);
-  position: fixed; /* Keeps it at the bottom even when scrolling */
-  left: 50%;
-  bottom: 20px; /* 20px from the bottom */
-  transform: translateX(-50%); /* Centers it horizontally */
+input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    text-align: center;
 }
 
-.search-box input[type="text"] {
-  background: transparent;
-  border: none;
-  color: white;
-  outline: none;
-  flex: 1;
-  padding: 10px;
-  font-size: 18px;
-  transition: background-color 0.3s ease, transform 0.3s ease;
+button {
+    padding: 10px 15px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
 }
 
-.search-box input[type="text"]:focus {
-  background-color: rgba(255, 255, 255, 0.3);
-  transform: scale(1.05); /* Slightly enlarge the text input on focus */
-  border: 2px solid #ff5a5f; /* Optional: Adds a red border when focused */
+button:hover {
+    background: #0056b3;
 }
 
-.search-box button {
-  background-color: #ff5a5f;
-  color: white;
-  border: none;
-  padding: 10px 15px;
-  border-radius: 20px;
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+/* Results Container - Upper Right & Oval */
+.results-container {
+    position: absolute;
+    top: 10%;
+    right: 5%;
+    width: 300px;
+    height: auto;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 20px;
+    border-radius: 50px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    max-height: 400px;
+    overflow-y: auto;
 }
 
-.search-box button:hover {
-  background-color: #ff3b40;
-  transform: scale(1.05);
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); /* Adds shadow effect on hover */
+.results-container ul {
+    list-style-type: none;
+    padding: 0;
 }
 
-/* Results Box Styling */
-.results-box {
-  margin-top: 30px;
-  padding: 20px;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  max-height: 400px; /* Set a fixed height for the results box */
-  overflow-y: auto; /* Enables scrolling if content exceeds height */
-  width: 60%;
-  max-width: 500px;
-  margin: 20px auto;
+.results-container li {
+    background: #f4f4f4;
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 25px;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
 }
 
-#resultsContainer {
-  margin: 0;
-  padding: 0;
+.results-container li:hover {
+    background: #e0e0e0;
 }
 
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-.result-item {
-  background-color: #fafafa;
-  padding: 15px;
-  margin-bottom: 15px;
-  border-radius: 8px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-  transition: background-color 0.3s ease;
-}
-
-.result-item:hover {
-  background-color: #f0f0f0;
-}
-
-.result-item h3 {
-  font-size: 18px;
-  color: #333;
-  margin-bottom: 10px;
-}
-
-.result-item p {
-  color: #666;
-  font-size: 14px;
-}
-
-.result-item p strong {
-  color: #333;
-}
-
-/* Back Button Styling */
+/* Back Button */
 .back-btn {
-  display: inline-block;
-  margin-top: 20px;
-  padding: 10px 20px;
-  background-color: #ff5a5f;
-  color: white;
-  text-decoration: none;
-  border-radius: 5px;
-  font-size: 16px;
+    display: block;
+    width: fit-content;
+    margin: 20px auto;
+    padding: 10px 15px;
+    background: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    text-align: center;
 }
 
 .back-btn:hover {
-  background-color: #ff3b40;
+    background: #0056b3;
+}
+
+/* Retina Display - High-Resolution Background */
+@media only screen and (-webkit-min-device-pixel-ratio: 2),
+       only screen and (min-resolution: 192dpi) {
+    body {
+        background-image: url('assets/car-manufacturers-bg@2x.png'); /* Use a higher-res image */
+    }
 }
