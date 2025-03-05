@@ -1,80 +1,109 @@
-<script>
-fetch('https://raw.githubusercontent.com/yprosperi/auto-part-cross-referencing/main/assets/cross_reference.json')
-    .then(response => {
-        if (!response.ok) {
-            throw new Error("Network response was not ok");
-        }
-        return response.json();
-    })
-    .then(partsData => {
-        console.log("✅ Data Loaded Successfully:", partsData);
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Results</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Search Results</h1>
 
-        let searchQuery = new URLSearchParams(window.location.search).get('query') || "";
-        searchQuery = searchQuery.toUpperCase(); // Case insensitive search
+        <!-- Loading Spinner -->
+        <div class="loading-spinner" id="loadingSpinner">
+            <p>Loading results...</p>
+        </div>
 
-        let matchedParts = [];
+        <!-- Results Box -->
+        <div class="results-container" id="resultsContainer" aria-live="polite">
+            <!-- Search results will be displayed here -->
+        </div>
 
-        // Search by both Part Number and Description
-        partsData.forEach(entry => {
-            let matchingParts = entry.Parts.filter(part =>
-                part["Part Number"].toUpperCase().includes(searchQuery) || 
-                entry.Description.toUpperCase().includes(searchQuery)
-            );
+        <a href="index.html" class="back-btn">Back to Search</a>
+    </div>
 
-            if (matchingParts.length > 0) {
-                matchedParts.push({
-                    "Description": entry.Description,
-                    "Parts": matchingParts
-                });
+    <script>
+    fetch('https://raw.githubusercontent.com/yprosperi/auto-part-cross-referencing/main/assets/cross_reference.json')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Network response was not ok");
             }
-        });
+            return response.json();
+        })
+        .then(partsData => {
+            console.log("✅ Data Loaded Successfully:", partsData);
 
-        console.log("🔍 Matched Parts:", matchedParts);
+            let searchQuery = new URLSearchParams(window.location.search).get('query') || "";
+            searchQuery = searchQuery.toUpperCase(); // Case insensitive search
 
-        const resultsContainer = document.getElementById('resultsContainer');
-        if (!resultsContainer) {
-            console.error("❌ Error: 'resultsContainer' not found in the HTML.");
-            return;
-        }
+            let matchedParts = [];
 
-        resultsContainer.innerHTML = ''; // Clear previous results
+            // Search by both Part Number and Description
+            partsData.forEach(entry => {
+                let matchingParts = entry.Parts.filter(part => {
+                    let partNumber = part["Part Number"] ? String(part["Part Number"]).toUpperCase() : "";
+                    let description = entry.Description ? entry.Description.toUpperCase() : "";
 
-        // Ensure loadingSpinner exists before trying to hide it
-        const loadingSpinner = document.getElementById('loadingSpinner');
-        if (loadingSpinner) {
-            loadingSpinner.style.display = "none"; // Hide spinner
-        }
+                    return partNumber.includes(searchQuery) || description.includes(searchQuery);
+                });
 
-        if (matchedParts.length === 0) {
-            resultsContainer.innerHTML = '<p>No results found.</p>';
-            return;
-        }
-
-        // Display results
-        matchedParts.forEach(entry => {
-            const section = document.createElement('div');
-            section.innerHTML = `<h2>${entry.Description}</h2>`;
-
-            const ul = document.createElement('ul');
-            entry.Parts.forEach(part => {
-                const li = document.createElement('li');
-                li.innerHTML = `<strong>Part Number:</strong> ${part["Part Number"]} <br> <strong>Retailer:</strong> ${part["Parts Retailer"]}`;
-                ul.appendChild(li);
+                if (matchingParts.length > 0) {
+                    matchedParts.push({
+                        "Description": entry.Description,
+                        "Parts": matchingParts
+                    });
+                }
             });
 
-            section.appendChild(ul);
-            resultsContainer.appendChild(section);
+            console.log("🔍 Matched Parts:", matchedParts);
+
+            const resultsContainer = document.getElementById('resultsContainer');
+            if (!resultsContainer) {
+                console.error("❌ Error: 'resultsContainer' not found in the HTML.");
+                return;
+            }
+
+            resultsContainer.innerHTML = ''; // Clear previous results
+
+            // Ensure loadingSpinner exists before trying to hide it
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            if (loadingSpinner) {
+                loadingSpinner.style.display = "none"; // Hide spinner
+            }
+
+            if (matchedParts.length === 0) {
+                resultsContainer.innerHTML = '<p>No results found.</p>';
+                return;
+            }
+
+            // Display results
+            matchedParts.forEach(entry => {
+                const section = document.createElement('div');
+                section.innerHTML = `<h2>${entry.Description}</h2>`;
+
+                const ul = document.createElement('ul');
+                entry.Parts.forEach(part => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `<strong>Part Number:</strong> ${part["Part Number"]} <br> <strong>Retailer:</strong> ${part["Parts Retailer"]}`;
+                    ul.appendChild(li);
+                });
+
+                section.appendChild(ul);
+                resultsContainer.appendChild(section);
+            });
+        })
+        .catch(error => {
+            console.error('❌ Error loading JSON:', error);
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            if (loadingSpinner) {
+                loadingSpinner.style.display = "none"; // Hide spinner on error
+            }
+            const resultsContainer = document.getElementById('resultsContainer');
+            if (resultsContainer) {
+                resultsContainer.innerHTML = '<p>Error loading results.</p>';
+            }
         });
-    })
-    .catch(error => {
-        console.error('❌ Error loading JSON:', error);
-        const loadingSpinner = document.getElementById('loadingSpinner');
-        if (loadingSpinner) {
-            loadingSpinner.style.display = "none"; // Hide spinner on error
-        }
-        const resultsContainer = document.getElementById('resultsContainer');
-        if (resultsContainer) {
-            resultsContainer.innerHTML = '<p>Error loading results.</p>';
-        }
-    });
-</script>
+    </script>
+</body>
+</html>
