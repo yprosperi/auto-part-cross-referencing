@@ -1,6 +1,6 @@
 // Load data from updated JSON file
 let partsData = [];
-fetch('https://raw.githubusercontent.com/yprosperi/auto-part-cross-referencing/main/assets/car_parts_data_updated.json') // Ensure JSON is in /assets/
+fetch('https://raw.githubusercontent.com/yprosperi/auto-part-cross-referencing/main/assets/cross_reference.json') // Ensure JSON is in /assets/
     .then(response => response.json())
     .then(data => partsData = data)
     .catch(error => console.error('Error loading parts data:', error));
