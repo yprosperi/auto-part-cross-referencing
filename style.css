@@ -67,20 +67,7 @@ button:hover {
     overflow-y: auto;
 }
 
-/* Back Button */
-.back-btn {
-    display: block;
-    margin: 20px auto;
-    padding: 10px 15px;
-    background: #007bff;
-    color: white;
-    text-decoration: none;
-    border-radius: 5px;
-}
-
-.back-btn:hover {
-    background: #0056b3;
-
+/* Back Button - Merged and Fixed */
 .back-btn {
     display: block;
     width: fit-content;
@@ -92,6 +79,7 @@ button:hover {
     border-radius: 5px;
     text-align: center;
     font-weight: bold;
+    transition: background 0.3s;
 }
 
 .back-btn:hover {
