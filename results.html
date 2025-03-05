@@ -16,10 +16,8 @@
         </div>
 
         <!-- Results Box -->
-        <div class="results-box">
-            <div id="resultsContainer" aria-live="polite">
-                <!-- Search results will be displayed here -->
-            </div>
+        <div class="results-container" id="resultsContainer" aria-live="polite">
+            <!-- Search results will be displayed here -->
         </div>
 
         <a href="index.html" class="back-btn">Back to Search</a>
@@ -33,6 +31,7 @@
 
     if (!searchQuery) {
         document.getElementById('resultsContainer').innerHTML = '<p>Error: No search query provided.</p>';
+        document.getElementById('loadingSpinner').style.display = "none"; // Hide spinner
         throw new Error("Search query is missing from URL parameters.");
     }
 
@@ -46,10 +45,10 @@
             console.log("Data Loaded:", partsData); // Debugging Step
             
             let filteredParts = partsData.filter(part => 
-                part['Part Number']?.toUpperCase().includes(searchQuery.toUpperCase()) ||
-                part.Description?.toUpperCase().includes(searchQuery.toUpperCase()) ||
-                part.Manufacturer?.toUpperCase().includes(searchQuery.toUpperCase()) ||
-                part.Vehicle?.toUpperCase().includes(searchQuery.toUpperCase())
+                (part['Part Number'] || "").toUpperCase().includes(searchQuery.toUpperCase()) ||
+                (part.Description || "").toUpperCase().includes(searchQuery.toUpperCase()) ||
+                (part.Manufacturer || "").toUpperCase().includes(searchQuery.toUpperCase()) ||
+                (part.Vehicle || "").toUpperCase().includes(searchQuery.toUpperCase())
             );
 
             console.log("Filtered Parts:", filteredParts); // Debugging Step
@@ -83,10 +82,12 @@
             resultsContainer.appendChild(ul);
         })
         .catch(error => {
+            document.getElementById('loadingSpinner').style.display = "none"; // Hide spinner
             document.getElementById('resultsContainer').innerHTML = '<p>Error loading results.</p>';
             console.error('Error:', error);
         });
     </script>
 </body>
 </html>
+
 
