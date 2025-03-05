@@ -37,24 +37,36 @@
             let searchQuery = new URLSearchParams(window.location.search).get('query') || "";
             searchQuery = searchQuery.toUpperCase(); // Case insensitive search
 
+            let matchedDescription = null;
+
+            // Step 1: Find the matching description for the searched part number
+            partsData.forEach(entry => {
+                entry.Parts.forEach(part => {
+                    if (String(part["Part Number"]).toUpperCase().includes(searchQuery)) {
+                        matchedDescription = entry.Description;
+                    }
+                });
+            });
+
+            console.log("🔍 Matched Description:", matchedDescription);
+
             let matchedParts = [];
 
-            // Search by both Part Number and Description
-            partsData.forEach(entry => {
-                let matchingParts = entry.Parts.filter(part => {
-                    let partNumber = part["Part Number"] ? String(part["Part Number"]).toUpperCase() : "";
-                    let description = entry.Description ? entry.Description.toUpperCase() : "";
-
-                    return partNumber.includes(searchQuery) || description.includes(searchQuery);
+            // Step 2: If a description was found, get ALL part numbers under that description
+            if (matchedDescription) {
+                partsData.forEach(entry => {
+                    if (entry.Description.toUpperCase() === matchedDescription.toUpperCase()) {
+                        matchedParts.push(entry);
+                    }
                 });
-
-                if (matchingParts.length > 0) {
-                    matchedParts.push({
-                        "Description": entry.Description,
-                        "Parts": matchingParts
-                    });
-                }
-            });
+            } else {
+                // If no exact part number is found, search by description instead
+                partsData.forEach(entry => {
+                    if (entry.Description.toUpperCase().includes(searchQuery)) {
+                        matchedParts.push(entry);
+                    }
+                });
+            }
 
             console.log("🔍 Matched Parts:", matchedParts);
 
@@ -77,7 +89,7 @@
                 return;
             }
 
-            // Display results
+            // Step 3: Display all part numbers under the matched description
             matchedParts.forEach(entry => {
                 const section = document.createElement('div');
                 section.innerHTML = `<h2>${entry.Description}</h2>`;
