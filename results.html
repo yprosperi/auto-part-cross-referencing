@@ -26,27 +26,30 @@
     </div>
 
     <script>
-        // Extract search query from URL
+        // Extract search query and sorting option from URL
         const urlParams = new URLSearchParams(window.location.search);
-        const searchQuery = urlParams.get('query');
+        const searchQuery = urlParams.get('query') ? urlParams.get('query').toUpperCase() : "";
         const sortOption = urlParams.get('sort');
 
         // Load JSON Data
         fetch('https://raw.githubusercontent.com/yprosperi/auto-part-cross-referencing/main/assets/cross_reference.json')
             .then(response => response.json())
             .then(partsData => {
+                console.log("Loaded Parts Data:", partsData); // Debugging
+
+                // Normalize JSON keys (change as needed to match actual JSON structure)
                 let filteredParts = partsData.filter(part => 
-                    part['Part Number'].toUpperCase().includes(searchQuery.toUpperCase()) ||
-                    part.Description.toUpperCase().includes(searchQuery.toUpperCase()) ||
-                    part.Manufacturer.toUpperCase().includes(searchQuery.toUpperCase()) ||
-                    part.Vehicle.toUpperCase().includes(searchQuery.toUpperCase())
+                    part['Part Number']?.toUpperCase().includes(searchQuery) ||
+                    part.Description?.toUpperCase().includes(searchQuery) ||
+                    part.Manufacturer?.toUpperCase().includes(searchQuery) ||
+                    (part.Vehicle ? part.Vehicle.toUpperCase().includes(searchQuery) : false)
                 );
 
                 // Apply sorting if selected
                 if (sortOption === 'manufacturer') {
-                    filteredParts.sort((a, b) => a.Manufacturer.localeCompare(b.Manufacturer));
+                    filteredParts.sort((a, b) => (a.Manufacturer || "").localeCompare(b.Manufacturer || ""));
                 } else if (sortOption === 'description') {
-                    filteredParts.sort((a, b) => a.Description.localeCompare(b.Description));
+                    filteredParts.sort((a, b) => (a.Description || "").localeCompare(b.Description || ""));
                 }
 
                 const resultsContainer = document.getElementById('resultsContainer');
@@ -55,6 +58,7 @@
                 // Hide loading spinner when data is loaded
                 loadingSpinner.style.display = 'none';
 
+                // Clear previous results
                 resultsContainer.innerHTML = '';
 
                 if (filteredParts.length === 0) {
@@ -62,17 +66,19 @@
                     return;
                 }
 
+                // Create a results list
                 const ul = document.createElement('ul');
                 filteredParts.forEach(part => {
                     const li = document.createElement('li');
                     li.classList.add('result-item');
                     li.innerHTML = `
-                        <h3>${part.Description} (${part.Manufacturer})</h3>
-                        <p><strong>Part Number:</strong> ${part['Part Number']}</p>
-                        <p><strong>Vehicle:</strong> ${part.Vehicle}</p>
+                        <h3>${part.Description || "No Description"} (${part.Manufacturer || "Unknown"})</h3>
+                        <p><strong>Part Number:</strong> ${part['Part Number'] || "N/A"}</p>
+                        <p><strong>Vehicle:</strong> ${part.Vehicle || "N/A"}</p>
                     `;
                     ul.appendChild(li);
                 });
+
                 resultsContainer.appendChild(ul);
             })
             .catch(error => {
