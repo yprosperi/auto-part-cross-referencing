@@ -1,104 +1,59 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Search Results</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <div class="container">
-        <h1>Search Results</h1>
+<script>
+fetch('cross_reference.json')
+    .then(response => response.json())
+    .then(partsData => {
+        console.log("✅ Data Loaded Successfully:", partsData);
 
-        <!-- Loading Spinner -->
-        <div class="loading-spinner" id="loadingSpinner">
-            <p>Loading results...</p>
-        </div>
+        let searchQuery = new URLSearchParams(window.location.search).get('query') || "";
+        searchQuery = searchQuery.toUpperCase(); // Case insensitive search
 
-        <!-- Results Box -->
-        <div class="results-container" id="resultsContainer" aria-live="polite">
-            <!-- Search results will be displayed here -->
-        </div>
+        let matchedParts = [];
 
-        <a href="index.html" class="back-btn">Back to Search</a>
-    </div>
-
-    <script>
-    // Extract search query from URL
-    const urlParams = new URLSearchParams(window.location.search);
-    let searchQuery = urlParams.get('query') || "";
-    searchQuery = searchQuery.toUpperCase(); // Convert to uppercase for case-insensitive search
-
-    if (!searchQuery) {
-        document.getElementById('resultsContainer').innerHTML = '<p>Error: No search query provided.</p>';
-        document.getElementById('loadingSpinner').style.display = "none"; // Hide spinner
-        throw new Error("Search query is missing from URL parameters.");
-    }
-
-    console.log("🔍 Search Query:", searchQuery);
-
-    // Load JSON Data
-    fetch('cross_reference.json')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error("Network response was not ok");
-            }
-            return response.json();
-        })
-        .then(partsData => {
-            console.log("✅ Data Loaded Successfully:", partsData);
-
-            let formattedParts = [];
-
-            // Convert JSON object into an array format for easier searching
-            Object.keys(partsData).forEach(partName => {
-                const partStores = partsData[partName];
-                Object.keys(partStores).forEach(store => {
-                    formattedParts.push({
-                        "Part Number": partStores[store] || "N/A",
-                        "Description": partName,
-                        "Manufacturer": store
-                    });
-                });
-            });
-
-            console.log("🛠 Formatted Parts Array:", formattedParts);
-
-            // Filter parts based on search query
-            let filteredParts = formattedParts.filter(part =>
-                part["Part Number"].toUpperCase().includes(searchQuery) ||
-                part.Description.toUpperCase().includes(searchQuery) ||
-                part.Manufacturer.toUpperCase().includes(searchQuery)
+        // Search by both Part Number and Description
+        partsData.forEach(entry => {
+            let matchingParts = entry.Parts.filter(part =>
+                part["Part Number"].toUpperCase().includes(searchQuery) || 
+                entry.Description.toUpperCase().includes(searchQuery)
             );
 
-            console.log("🔍 Filtered Parts:", filteredParts);
-
-            const resultsContainer = document.getElementById('resultsContainer');
-            resultsContainer.innerHTML = ''; // Clear previous results
-            document.getElementById('loadingSpinner').style.display = "none"; // Hide spinner
-
-            if (filteredParts.length === 0) {
-                resultsContainer.innerHTML = '<p>No results found.</p>';
-                return;
+            if (matchingParts.length > 0) {
+                matchedParts.push({
+                    "Description": entry.Description,
+                    "Parts": matchingParts
+                });
             }
+        });
 
-            // Create and display results list
+        console.log("🔍 Matched Parts:", matchedParts);
+
+        const resultsContainer = document.getElementById('resultsContainer');
+        resultsContainer.innerHTML = ''; // Clear previous results
+        document.getElementById('loadingSpinner').style.display = "none"; // Hide spinner
+
+        if (matchedParts.length === 0) {
+            resultsContainer.innerHTML = '<p>No results found.</p>';
+            return;
+        }
+
+        // Display results
+        matchedParts.forEach(entry => {
+            const section = document.createElement('div');
+            section.innerHTML = `<h2>${entry.Description}</h2>`;
+
             const ul = document.createElement('ul');
-            filteredParts.forEach(part => {
+            entry.Parts.forEach(part => {
                 const li = document.createElement('li');
-                li.innerHTML = `
-                    <h3>${part.Description} (${part.Manufacturer})</h3>
-                    <p><strong>Part Number:</strong> ${part["Part Number"]}</p>
-                `;
+                li.innerHTML = `<strong>Part Number:</strong> ${part["Part Number"]} <br> <strong>Retailer:</strong> ${part["Parts Retailer"]}`;
                 ul.appendChild(li);
             });
-            resultsContainer.appendChild(ul);
-        })
-        .catch(error => {
-            document.getElementById('loadingSpinner').style.display = "none"; // Hide spinner
-            document.getElementById('resultsContainer').innerHTML = '<p>Error loading results.</p>';
-            console.error('❌ Error:', error);
+
+            section.appendChild(ul);
+            resultsContainer.appendChild(section);
         });
-    </script>
-</body>
-</html>
+    })
+    .catch(error => {
+        document.getElementById('loadingSpinner').style.display = "none";
+        document.getElementById('resultsContainer').innerHTML = '<p>Error loading results.</p>';
+        console.error('❌ Error:', error);
+    });
+</script>
