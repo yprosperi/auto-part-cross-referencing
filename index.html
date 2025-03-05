@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Auto Part Cross-Referencing Tool</title>
     <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script> <!-- Use defer to ensure the script loads after the DOM -->
 </head>
 <body>
     <div class="container">
@@ -19,15 +20,17 @@
                 <option value="">Sort by...</option>
                 <option value="manufacturer">Manufacturer</option>
                 <option value="description">Description</option>
+                <option value="part number">Part Number</option>
             </select>
 
-            <button onclick="searchParts()">Search</button>
+            <button id="searchButton">Search</button>
         </div>
 
         <!-- Results Section -->
         <div class="results-container" id="resultsContainer">
             <!-- Results will appear here -->
         </div>
-    <script src="script.js"></script>
+    </div>
 </body>
 </html>
+
