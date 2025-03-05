@@ -1,6 +1,11 @@
 <script>
-fetch('cross_reference.json')
-    .then(response => response.json())
+fetch('https://raw.githubusercontent.com/yprosperi/auto-part-cross-referencing/main/assets/cross_reference.json')
+    .then(response => {
+        if (!response.ok) {
+            throw new Error("Network response was not ok");
+        }
+        return response.json();
+    })
     .then(partsData => {
         console.log("✅ Data Loaded Successfully:", partsData);
 
@@ -27,8 +32,18 @@ fetch('cross_reference.json')
         console.log("🔍 Matched Parts:", matchedParts);
 
         const resultsContainer = document.getElementById('resultsContainer');
+        if (!resultsContainer) {
+            console.error("❌ Error: 'resultsContainer' not found in the HTML.");
+            return;
+        }
+
         resultsContainer.innerHTML = ''; // Clear previous results
-        document.getElementById('loadingSpinner').style.display = "none"; // Hide spinner
+
+        // Ensure loadingSpinner exists before trying to hide it
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        if (loadingSpinner) {
+            loadingSpinner.style.display = "none"; // Hide spinner
+        }
 
         if (matchedParts.length === 0) {
             resultsContainer.innerHTML = '<p>No results found.</p>';
@@ -52,8 +67,14 @@ fetch('cross_reference.json')
         });
     })
     .catch(error => {
-        document.getElementById('loadingSpinner').style.display = "none";
-        document.getElementById('resultsContainer').innerHTML = '<p>Error loading results.</p>';
-        console.error('❌ Error:', error);
+        console.error('❌ Error loading JSON:', error);
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        if (loadingSpinner) {
+            loadingSpinner.style.display = "none"; // Hide spinner on error
+        }
+        const resultsContainer = document.getElementById('resultsContainer');
+        if (resultsContainer) {
+            resultsContainer.innerHTML = '<p>Error loading results.</p>';
+        }
     });
 </script>
