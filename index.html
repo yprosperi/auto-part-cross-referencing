@@ -13,6 +13,11 @@
         <!-- Search Box -->
         <div class="search-container">
             <input type="text" id="searchInput" placeholder="Enter Part Number or Description">
+            <select id="sortOption">
+                <option value="">Sort By</option>
+                <option value="manufacturer">Manufacturer</option>
+                <option value="description">Description</option>
+            </select>
             <button onclick="searchParts()">Search</button>
         </div>
 
@@ -29,22 +34,6 @@
         </div>
     </div>
 
-    <script>
-    function searchParts() {
-        const searchInput = document.getElementById('searchInput').value.trim().toUpperCase();
-
-        if (!searchInput) {
-            alert("Please enter a part number or description.");
-            return;
-        }
-
-        // Show loading spinner
-        document.getElementById('loadingSpinner').style.display = "block";
-
-        // Redirect to results page with query parameters
-        window.location.href = `results.html?query=${encodeURIComponent(searchInput)}`;
-    }
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
-
