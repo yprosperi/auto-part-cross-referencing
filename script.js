@@ -1,16 +1,23 @@
-// Load data from updated JSON file
+// Initialize empty array for parts data
 let partsData = [];
+
+// Load data from updated JSON file
 fetch('https://raw.githubusercontent.com/yprosperi/auto-part-cross-referencing/main/assets/cross_reference.json')
     .then(response => response.json())
     .then(data => {
-        // Convert the object into an array of structured parts
-        partsData = Object.entries(data).flatMap(([description, manufacturers]) => 
+        // Convert object to array format
+        partsData = Object.entries(data).flatMap(([description, manufacturers]) =>
             Object.entries(manufacturers).map(([manufacturer, partNumber]) => ({
                 description,
                 partNumber,
                 manufacturer
             }))
         );
+
+        // If already on results.html, trigger displayResults
+        if (window.location.pathname.includes('results.html')) {
+            displayResults();
+        }
     })
     .catch(error => console.error('Error loading parts data:', error));
 
@@ -24,17 +31,17 @@ function searchParts() {
     window.open(`results.html?query=${encodeURIComponent(searchInput)}&sort=${encodeURIComponent(sortOption)}`, '_blank');
 }
 
-// Function to handle the display of results on the results page
+// Function to display search results on results.html
 function displayResults() {
-    const params = new URLSearchParams(window.location.search);
-    const query = params.get('query') ? params.get('query').toUpperCase() : "";
-    const sortOption = params.get('sort');
-
-    // Wait until partsData is loaded before filtering
+    // Wait until data is fully loaded
     if (partsData.length === 0) {
         setTimeout(displayResults, 100); // Retry after 100ms
         return;
     }
+
+    const params = new URLSearchParams(window.location.search);
+    const query = params.get('query') ? params.get('query').toUpperCase() : "";
+    const sortOption = params.get('sort');
 
     // Filter the data based on search query
     let filteredData = partsData.filter(part => 
@@ -58,8 +65,8 @@ function displayResults() {
             resultItem.classList.add('result-item');
             resultItem.innerHTML = `
                 <h3>${part.description}</h3>
-                <p>Part Number: ${part.partNumber}</p>
-                <p>Manufacturer: ${part.manufacturer}</p>
+                <p><strong>Part Number:</strong> ${part.partNumber}</p>
+                <p><strong>Manufacturer:</strong> ${part.manufacturer}</p>
             `;
             resultsContainer.appendChild(resultItem);
         });
@@ -68,7 +75,7 @@ function displayResults() {
     }
 }
 
-// Call the displayResults function when the results page is loaded
+// Ensure results page loads results when opened
 if (window.location.pathname.includes('results.html')) {
-    displayResults();
+    setTimeout(displayResults, 100); // Initial delay to allow data to load
 }
