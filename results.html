@@ -26,8 +26,8 @@
     <script>
     // Extract search query from URL
     const urlParams = new URLSearchParams(window.location.search);
-    const searchQuery = urlParams.get('query');
-    const sortOption = urlParams.get('sort');
+    let searchQuery = urlParams.get('query') || "";
+    searchQuery = searchQuery.toUpperCase(); // Convert to uppercase for case-insensitive search
 
     if (!searchQuery) {
         document.getElementById('resultsContainer').innerHTML = '<p>Error: No search query provided.</p>';
@@ -35,33 +35,46 @@
         throw new Error("Search query is missing from URL parameters.");
     }
 
-    console.log("Search Query:", searchQuery);
-    console.log("Sort Option:", sortOption);
+    console.log("🔍 Search Query:", searchQuery);
 
     // Load JSON Data
-    fetch('https://raw.githubusercontent.com/yprosperi/auto-part-cross-referencing/main/assets/cross_reference.json')
-        .then(response => response.json())
+    fetch('cross_reference.json')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Network response was not ok");
+            }
+            return response.json();
+        })
         .then(partsData => {
-            console.log("Data Loaded:", partsData); // Debugging Step
-            
-            let filteredParts = partsData.filter(part => 
-                (part['Part Number'] || "").toUpperCase().includes(searchQuery.toUpperCase()) ||
-                (part.Description || "").toUpperCase().includes(searchQuery.toUpperCase()) ||
-                (part.Manufacturer || "").toUpperCase().includes(searchQuery.toUpperCase()) ||
-                (part.Vehicle || "").toUpperCase().includes(searchQuery.toUpperCase())
+            console.log("✅ Data Loaded Successfully:", partsData);
+
+            let formattedParts = [];
+
+            // Convert JSON object into an array format for easier searching
+            Object.keys(partsData).forEach(partName => {
+                const partStores = partsData[partName];
+                Object.keys(partStores).forEach(store => {
+                    formattedParts.push({
+                        "Part Number": partStores[store] || "N/A",
+                        "Description": partName,
+                        "Manufacturer": store
+                    });
+                });
+            });
+
+            console.log("🛠 Formatted Parts Array:", formattedParts);
+
+            // Filter parts based on search query
+            let filteredParts = formattedParts.filter(part =>
+                part["Part Number"].toUpperCase().includes(searchQuery) ||
+                part.Description.toUpperCase().includes(searchQuery) ||
+                part.Manufacturer.toUpperCase().includes(searchQuery)
             );
 
-            console.log("Filtered Parts:", filteredParts); // Debugging Step
-
-            // Apply sorting if selected
-            if (sortOption === 'manufacturer') {
-                filteredParts.sort((a, b) => a.Manufacturer.localeCompare(b.Manufacturer));
-            } else if (sortOption === 'description') {
-                filteredParts.sort((a, b) => a.Description.localeCompare(b.Description));
-            }
+            console.log("🔍 Filtered Parts:", filteredParts);
 
             const resultsContainer = document.getElementById('resultsContainer');
-            resultsContainer.innerHTML = '';
+            resultsContainer.innerHTML = ''; // Clear previous results
             document.getElementById('loadingSpinner').style.display = "none"; // Hide spinner
 
             if (filteredParts.length === 0) {
@@ -69,13 +82,13 @@
                 return;
             }
 
+            // Create and display results list
             const ul = document.createElement('ul');
             filteredParts.forEach(part => {
                 const li = document.createElement('li');
                 li.innerHTML = `
                     <h3>${part.Description} (${part.Manufacturer})</h3>
-                    <p>Part Number: ${part['Part Number']}</p>
-                    <p>Vehicle: ${part.Vehicle}</p>
+                    <p><strong>Part Number:</strong> ${part["Part Number"]}</p>
                 `;
                 ul.appendChild(li);
             });
@@ -84,10 +97,8 @@
         .catch(error => {
             document.getElementById('loadingSpinner').style.display = "none"; // Hide spinner
             document.getElementById('resultsContainer').innerHTML = '<p>Error loading results.</p>';
-            console.error('Error:', error);
+            console.error('❌ Error:', error);
         });
     </script>
 </body>
 </html>
-
-
