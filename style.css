@@ -80,4 +80,20 @@ button:hover {
 
 .back-btn:hover {
     background: #0056b3;
+
+.back-btn {
+    display: block;
+    width: fit-content;
+    margin: 20px auto;
+    padding: 10px 15px;
+    background: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.back-btn:hover {
+    background: #0056b3;
 }
