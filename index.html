@@ -3,78 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Search Results</title>
+    <title>Search Parts</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <h1>Search Results</h1>
-        
+        <h1>Auto Parts Search</h1>
+
+        <!-- Search Box -->
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Enter Part Number or Description">
+            <button onclick="searchParts()">Search</button>
+        </div>
+
+        <!-- Loading Spinner -->
+        <div class="loading-spinner" id="loadingSpinner" style="display: none;">
+            <p>Loading results...</p>
+        </div>
+
         <!-- Results Box -->
         <div class="results-box">
             <div id="resultsContainer">
-                <p>Loading results...</p>
+                <!-- Search results will be displayed here -->
             </div>
         </div>
-
-        <a href="index.html" class="back-btn">Back to Search</a>
     </div>
-    
+
     <script>
-        // Extract search query from URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const searchQuery = urlParams.get('query');
-        const sortOption = urlParams.get('sort');
+    function searchParts() {
+        const searchInput = document.getElementById('searchInput').value.trim().toUpperCase();
 
-        console.log("Search Query:", searchQuery);
-        console.log("Sort Option:", sortOption);
+        if (!searchInput) {
+            alert("Please enter a part number or description.");
+            return;
+        }
 
-        // Load JSON Data
-        fetch('https://raw.githubusercontent.com/yprosperi/auto-part-cross-referencing/main/assets/cross_reference.json')
-            .then(response => response.json())
-            .then(partsData => {
-                console.log("Data Loaded:", partsData); // Debugging Step
-                
-                let filteredParts = partsData.filter(part => 
-                    part['Part Number'].toUpperCase().includes(searchQuery.toUpperCase()) ||
-                    part.Description.toUpperCase().includes(searchQuery.toUpperCase()) ||
-                    part.Manufacturer.toUpperCase().includes(searchQuery.toUpperCase()) ||
-                    part.Vehicle.toUpperCase().includes(searchQuery.toUpperCase())
-                );
-                
-                console.log("Filtered Parts:", filteredParts); // Debugging Step
+        // Show loading spinner
+        document.getElementById('loadingSpinner').style.display = "block";
 
-                // Apply sorting if selected
-                if (sortOption === 'manufacturer') {
-                    filteredParts.sort((a, b) => a.Manufacturer.localeCompare(b.Manufacturer));
-                } else if (sortOption === 'description') {
-                    filteredParts.sort((a, b) => a.Description.localeCompare(b.Description));
-                }
-
-                const resultsContainer = document.getElementById('resultsContainer');
-                resultsContainer.innerHTML = '';
-
-                if (filteredParts.length === 0) {
-                    resultsContainer.innerHTML = '<p>No results found.</p>';
-                    return;
-                }
-
-                const ul = document.createElement('ul');
-                filteredParts.forEach(part => {
-                    const li = document.createElement('li');
-                    li.innerHTML = `
-                        <h3>${part.Description} (${part.Manufacturer})</h3>
-                        <p>Part Number: ${part['Part Number']}</p>
-                        <p>Vehicle: ${part.Vehicle}</p>
-                    `;
-                    ul.appendChild(li);
-                });
-                resultsContainer.appendChild(ul);
-            })
-            .catch(error => {
-                document.getElementById('resultsContainer').innerHTML = '<p>Error loading results.</p>';
-                console.error('Error:', error);
-            });
+        // Redirect to results page with query parameters
+        window.location.href = `results.html?query=${encodeURIComponent(searchInput)}`;
+    }
     </script>
 </body>
 </html>
+
