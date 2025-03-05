@@ -3,70 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Parts Number Tab</title>
-    <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th, td {
-            border: 1px solid black;
-            padding: 8px;
-            text-align: left;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-        input {
-            margin-bottom: 10px;
-            padding: 5px;
-            width: 100%;
-        }
-    </style>
+    <title>Search Results</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h2>Parts Number Lookup</h2>
-    <input type="text" id="searchInput" placeholder="Search by Part Number, Description, or Manufacturer" onkeyup="filterTable()">
-    <table id="partsTable">
-        <thead>
-            <tr>
-                <th>Description</th>
-                <th>Manufacturer</th>
-                <th>Part Number</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
+    <div class="container">
+        <h1>Search Results</h1>
+        
+        <!-- Results Box -->
+        <div class="results-box">
+            <div id="resultsContainer">
+                <p>Loading results...</p>
+            </div>
+        </div>
+
+        <a href="index.html" class="back-btn">Back to Search</a>
+    </div>
     
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            fetch('cross_reference.json') // Load JSON file
-                .then(response => response.json())
-                .then(data => {
-                    const tableBody = document.querySelector("#partsTable tbody");
-                    data.forEach(part => {
-                        const row = document.createElement("tr");
-                        row.innerHTML = `
-                            <td>${part.description || "N/A"}</td>
-                            <td>${part.manufacturer || "N/A"}</td>
-                            <td>${part.partNumber || "N/A"}</td>
-                        `;
-                        tableBody.appendChild(row);
-                    });
-                })
-                .catch(error => console.error('Error loading parts data:', error));
-        });
+        // Extract search query from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const searchQuery = urlParams.get('query');
+        const sortOption = urlParams.get('sort');
 
-        function filterTable() {
-            const searchValue = document.getElementById("searchInput").value.toUpperCase();
-            const rows = document.querySelectorAll("#partsTable tbody tr");
-            
-            rows.forEach(row => {
-                const textContent = row.innerText.toUpperCase();
-                row.style.display = textContent.includes(searchValue) ? "" : "none";
+        console.log("Search Query:", searchQuery);
+        console.log("Sort Option:", sortOption);
+
+        // Load JSON Data
+        fetch('https://raw.githubusercontent.com/yprosperi/auto-part-cross-referencing/main/assets/car_parts_data_updated.json')
+            .then(response => response.json())
+            .then(partsData => {
+                console.log("Data Loaded:", partsData); // Debugging Step
+                
+                let filteredParts = partsData.filter(part => 
+                    part['Part Number'].toUpperCase().includes(searchQuery.toUpperCase()) ||
+                    part.Description.toUpperCase().includes(searchQuery.toUpperCase()) ||
+                    part.Manufacturer.toUpperCase().includes(searchQuery.toUpperCase()) ||
+                    part.Vehicle.toUpperCase().includes(searchQuery.toUpperCase())
+                );
+                
+                console.log("Filtered Parts:", filteredParts); // Debugging Step
+
+                // Apply sorting if selected
+                if (sortOption === 'manufacturer') {
+                    filteredParts.sort((a, b) => a.Manufacturer.localeCompare(b.Manufacturer));
+                } else if (sortOption === 'description') {
+                    filteredParts.sort((a, b) => a.Description.localeCompare(b.Description));
+                }
+
+                const resultsContainer = document.getElementById('resultsContainer');
+                resultsContainer.innerHTML = '';
+
+                if (filteredParts.length === 0) {
+                    resultsContainer.innerHTML = '<p>No results found.</p>';
+                    return;
+                }
+
+                const ul = document.createElement('ul');
+                filteredParts.forEach(part => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `
+                        <h3>${part.Description} (${part.Manufacturer})</h3>
+                        <p>Part Number: ${part['Part Number']}</p>
+                        <p>Vehicle: ${part.Vehicle}</p>
+                    `;
+                    ul.appendChild(li);
+                });
+                resultsContainer.appendChild(ul);
+            })
+            .catch(error => {
+                document.getElementById('resultsContainer').innerHTML = '<p>Error loading results.</p>';
+                console.error('Error:', error);
             });
-        }
     </script>
 </body>
 </html>
-
