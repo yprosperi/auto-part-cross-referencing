@@ -32,7 +32,7 @@
         const sortOption = urlParams.get('sort');
 
         // Load JSON Data
-        fetch('https://raw.githubusercontent.com/yprosperi/auto-part-cross-referencing/main/assets/car_parts_data_updated.json')
+        fetch('https://raw.githubusercontent.com/yprosperi/auto-part-cross-referencing/main/assets/cross_reference.json')
             .then(response => response.json())
             .then(partsData => {
                 let filteredParts = partsData.filter(part => 
