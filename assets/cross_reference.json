@@ -1,102 +1,47 @@
 [
     {
         "Description": "Alternator",
-        "Part Number": "11604A",
-        "Parts Retailer": "Advance Auto Parts"
-    },
-    {
-        "Description": "Alternator",
-        "Part Number": "DLG10132",
-        "Parts Retailer": "AutoZone"
-    },
-    {
-        "Description": "Alternator",
-        "Part Number": "31100-RX0-A01",
-        "Parts Retailer": "Honda Dealership"
-    },
-    {
-        "Description": "Alternator",
-        "Part Number": "31100-RX0-A01",
-        "Parts Retailer": "NAPA"
+        "Parts": [
+            { "Part Number": "11604A", "Parts Retailer": "Advance Auto Parts" },
+            { "Part Number": "DLG10132", "Parts Retailer": "AutoZone" },
+            { "Part Number": "31100-RX0-A01", "Parts Retailer": "Honda Dealership" },
+            { "Part Number": "31100-RX0-A01", "Parts Retailer": "NAPA" }
+        ]
     },
     {
         "Description": "Engine Coolant Hose",
-        "Part Number": "E72450",
-        "Parts Retailer": "Advance Auto Parts"
-    },
-    {
-        "Description": "Engine Coolant Hose",
-        "Part Number": "E72450",
-        "Parts Retailer": "AutoZone"
-    },
-    {
-        "Description": "Engine Coolant Hose",
-        "Part Number": "19509-RNA-A01",
-        "Parts Retailer": "Honda Dealership"
-    },
-    {
-        "Description": "Engine Coolant Hose",
-        "Part Number": "19509-RNA-A01",
-        "Parts Retailer": "NAPA"
+        "Parts": [
+            { "Part Number": "E72450", "Parts Retailer": "Advance Auto Parts" },
+            { "Part Number": "E72450", "Parts Retailer": "AutoZone" },
+            { "Part Number": "19509-RNA-A01", "Parts Retailer": "Honda Dealership" },
+            { "Part Number": "19509-RNA-A01", "Parts Retailer": "NAPA" }
+        ]
     },
     {
         "Description": "Fuel Cap",
-        "Part Number": "10834",
-        "Parts Retailer": "Advance Auto Parts"
-    },
-    {
-        "Description": "Fuel Cap",
-        "Part Number": "6817A",
-        "Parts Retailer": "AutoZone"
-    },
-    {
-        "Description": "Fuel Cap",
-        "Part Number": "17670-T3W-A01",
-        "Parts Retailer": "Honda Dealership"
-    },
-    {
-        "Description": "Fuel Cap",
-        "Part Number": "17670-T3W-A01",
-        "Parts Retailer": "NAPA"
+        "Parts": [
+            { "Part Number": "10834", "Parts Retailer": "Advance Auto Parts" },
+            { "Part Number": "6817A", "Parts Retailer": "AutoZone" },
+            { "Part Number": "17670-T3W-A01", "Parts Retailer": "Honda Dealership" },
+            { "Part Number": "17670-T3W-A01", "Parts Retailer": "NAPA" }
+        ]
     },
     {
         "Description": "Fuel Injector",
-        "Part Number": "A212-3654",
-        "Parts Retailer": "Advance Auto Parts"
-    },
-    {
-        "Description": "Fuel Injector",
-        "Part Number": "800-2083N",
-        "Parts Retailer": "AutoZone"
-    },
-    {
-        "Description": "Fuel Injector",
-        "Part Number": "16450-RNA-A01",
-        "Parts Retailer": "Honda Dealership"
-    },
-    {
-        "Description": "Fuel Injector",
-        "Part Number": "16450-RNA-A01",
-        "Parts Retailer": "NAPA"
+        "Parts": [
+            { "Part Number": "A212-3654", "Parts Retailer": "Advance Auto Parts" },
+            { "Part Number": "800-2083N", "Parts Retailer": "AutoZone" },
+            { "Part Number": "16450-RNA-A01", "Parts Retailer": "Honda Dealership" },
+            { "Part Number": "16450-RNA-A01", "Parts Retailer": "NAPA" }
+        ]
     },
     {
         "Description": "Fuel Pump Assembly",
-        "Part Number": "U2541355",
-        "Parts Retailer": "Advance Auto Parts"
-    },
-    {
-        "Description": "Fuel Pump Assembly",
-        "Part Number": "DFG1546",
-        "Parts Retailer": "AutoZone"
-    },
-    {
-        "Description": "Fuel Pump Assembly",
-        "Part Number": "17045-TR0-L32",
-        "Parts Retailer": "Honda Dealership"
-    },
-    {
-        "Description": "Fuel Pump Assembly",
-        "Part Number": "17045-TR0-L32",
-        "Parts Retailer": "NAPA"
+        "Parts": [
+            { "Part Number": "U2541355", "Parts Retailer": "Advance Auto Parts" },
+            { "Part Number": "DFG1546", "Parts Retailer": "AutoZone" },
+            { "Part Number": "17045-TR0-L32", "Parts Retailer": "Honda Dealership" },
+            { "Part Number": "17045-TR0-L32", "Parts Retailer": "NAPA" }
+        ]
     }
 ]
