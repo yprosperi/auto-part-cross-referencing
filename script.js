@@ -3,7 +3,14 @@ let partsData = [];
 fetch('https://raw.githubusercontent.com/yprosperi/auto-part-cross-referencing/main/assets/cross_reference.json')
     .then(response => response.json())
     .then(data => {
-        partsData = data;
+        // Convert the object into an array of structured parts
+        partsData = Object.entries(data).flatMap(([description, manufacturers]) => 
+            Object.entries(manufacturers).map(([manufacturer, partNumber]) => ({
+                description,
+                partNumber,
+                manufacturer
+            }))
+        );
     })
     .catch(error => console.error('Error loading parts data:', error));
 
@@ -12,7 +19,7 @@ function searchParts() {
     const searchInput = document.getElementById('searchInput').value.toUpperCase();
     const sortOptionElement = document.getElementById('sortOption');
     const sortOption = sortOptionElement ? sortOptionElement.value : ""; // Default to empty string if not found
-    
+
     // Redirect to results page with query parameters in a new tab
     window.open(`results.html?query=${encodeURIComponent(searchInput)}&sort=${encodeURIComponent(sortOption)}`, '_blank');
 }
@@ -20,13 +27,19 @@ function searchParts() {
 // Function to handle the display of results on the results page
 function displayResults() {
     const params = new URLSearchParams(window.location.search);
-    const query = params.get('query').toUpperCase();
+    const query = params.get('query') ? params.get('query').toUpperCase() : "";
     const sortOption = params.get('sort');
 
+    // Wait until partsData is loaded before filtering
+    if (partsData.length === 0) {
+        setTimeout(displayResults, 100); // Retry after 100ms
+        return;
+    }
+
     // Filter the data based on search query
-    let filteredData = partsData.filter(part => {
-        return part.description.toUpperCase().includes(query) || part.partNumber.includes(query);
-    });
+    let filteredData = partsData.filter(part => 
+        part.description.toUpperCase().includes(query) || part.partNumber.includes(query)
+    );
 
     // Sort the data based on selected sort option
     if (sortOption === "manufacturer") {
@@ -47,8 +60,6 @@ function displayResults() {
                 <h3>${part.description}</h3>
                 <p>Part Number: ${part.partNumber}</p>
                 <p>Manufacturer: ${part.manufacturer}</p>
-                <p>Price: $${part.price}</p>
-                <p>Available at: ${part.availableAt}</p>
             `;
             resultsContainer.appendChild(resultItem);
         });
@@ -61,4 +72,3 @@ function displayResults() {
 if (window.location.pathname.includes('results.html')) {
     displayResults();
 }
-
