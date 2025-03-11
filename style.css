@@ -29,20 +29,22 @@ h1 {
 .search-container {
     position: relative;
     width: 100%;
+    max-width: 400px; /* Limit the max width */
     background: rgba(255, 255, 255, 0.9);
     padding: 15px;
     border-radius: 10px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
     text-align: center;
+    margin: 0 auto; /* Center align the container */
 }
 
 input, select {
-    width: calc(100% - 20px); /* Adjust for padding */
+    width: 100%; /* Ensure full width of the container */
     padding: 10px;
     margin: 10px 0;
     border: 1px solid #ccc;
     border-radius: 5px;
-    box-sizing: border-box; /* Ensures padding doesn't affect width */
+    box-sizing: border-box; /* Include padding in the width */
     text-align: center;
 }
 
@@ -82,6 +84,11 @@ button:hover {
     font-weight: bold;
     transition: background 0.3s;
 }
+
+.back-btn:hover {
+    background: #0056b3;
+}
+
 
 .back-btn:hover {
     background: #0056b3;
