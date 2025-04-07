@@ -1,0 +1,14 @@
+import React from 'react';
+import './App.css';  // Ensure this file exists
+import PartsList from './PartsList';  // Ensure this file exists
+
+function App() {
+  return (
+    <div className="App">
+      <h1>Auto Parts List</h1>
+      <PartsList />
+    </div>
+  );
+}
+
+export default App;

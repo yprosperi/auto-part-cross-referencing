@@ -1,0 +1,14 @@
+router.get("/", async (req, res) => {
+  try {
+    console.log("Executing query: SELECT * FROM parts WHERE cost IS NOT NULL AND cost > 0");
+    const [results] = await db.query(
+      "SELECT * FROM parts WHERE cost IS NOT NULL AND cost > 0"
+    );
+    console.log("Raw Database Response:", results); // Log the raw response
+    res.json(results);
+  } catch (error) {
+    console.error("Error fetching parts:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+

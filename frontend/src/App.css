@@ -1,0 +1,19 @@
+/* App.css - Example Styles */
+.App {
+  text-align: center;
+}
+
+h1 {
+  color: #4CAF50;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  padding: 8px;
+  margin: 5px 0;
+  border: 1px solid #ddd;
+}

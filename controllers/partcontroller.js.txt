@@ -1,0 +1,60 @@
+const { Part } = require("../models");
+
+// Get all parts
+exports.getAllParts = async (req, res) => {
+  try {
+    const parts = await Part.findAll();
+    res.json(parts);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch parts" });
+  }
+};
+
+// Get a single part by ID
+exports.getPartById = async (req, res) => {
+  try {
+    const part = await Part.findByPk(req.params.id);
+    if (!part) return res.status(404).json({ error: "Part not found" });
+    res.json(part);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch part" });
+  }
+};
+
+// Create a new part
+exports.createPart = async (req, res) => {
+  try {
+    const { name, manufacturer, partNumber, category, price } = req.body;
+    const newPart = await Part.create({ name, manufacturer, partNumber, category, price });
+    res.status(201).json(newPart);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to create part" });
+  }
+};
+
+// Update an existing part
+exports.updatePart = async (req, res) => {
+  try {
+    const { name, manufacturer, partNumber, category, price } = req.body;
+    const part = await Part.findByPk(req.params.id);
+    if (!part) return res.status(404).json({ error: "Part not found" });
+
+    await part.update({ name, manufacturer, partNumber, category, price });
+    res.json(part);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to update part" });
+  }
+};
+
+// Delete a part
+exports.deletePart = async (req, res) => {
+  try {
+    const part = await Part.findByPk(req.params.id);
+    if (!part) return res.status(404).json({ error: "Part not found" });
+
+    await part.destroy();
+    res.json({ message: "Part deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to delete part" });
+  }
+};

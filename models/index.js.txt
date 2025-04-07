@@ -1,0 +1,14 @@
+const sequelize = require("../config/db");
+const Part = require("./Part");
+
+const syncDB = async () => {
+  try {
+    await sequelize.sync({ alter: true }); // Sync database
+    console.log("✅ Database synced successfully.");
+  } catch (error) {
+    console.error("❌ Error syncing database:", error);
+  }
+};
+
+module.exports = { Part, syncDB };
+

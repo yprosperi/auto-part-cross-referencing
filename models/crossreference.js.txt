@@ -1,0 +1,27 @@
+const { DataTypes } = require("sequelize");
+const sequelize = require("../config/db");
+const Part = require("./Part");
+
+const CrossReference = sequelize.define("CrossReference", {
+  id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    primaryKey: true,
+  },
+  original_part_id: {
+    type: DataTypes.INTEGER,
+    references: {
+      model: Part,
+      key: "id",
+    },
+  },
+  compatible_part_id: {
+    type: DataTypes.INTEGER,
+    references: {
+      model: Part,
+      key: "id",
+    },
+  },
+});
+
+module.exports = CrossReference;

@@ -1,0 +1,31 @@
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+
+function PartsList() {
+  const [parts, setParts] = useState([]);
+
+  useEffect(() => {
+    axios.get('http://localhost:5000/api/parts') // Update the backend URL if needed
+      .then((response) => {
+        setParts(response.data);
+      })
+      .catch((error) => {
+        console.error('Error fetching parts:', error);
+      });
+  }, []);
+
+  return (
+    <div>
+      <h2>Parts</h2>
+      <ul>
+        {parts.map((part) => (
+          <li key={part.id}>
+            <strong>{part.part_number}</strong> - {part.description} - ${part.cost}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+export default PartsList;
