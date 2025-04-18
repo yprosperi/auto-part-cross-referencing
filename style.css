@@ -45,6 +45,8 @@
             return response.json();
         })
         .then(data => {
+            console.log("✅ Data loaded");
+
             const flatParts = [];
             data.forEach(entry => {
                 entry.Parts.forEach(part => {
@@ -60,9 +62,8 @@
                 threshold: 0.3
             });
 
-            let searchResults = searchQuery ? fuse.search(searchQuery).map(r => r.item) : flatParts;
+            let searchResults = searchQuery ? fuse.search(searchQuery).map(result => result.item) : flatParts;
 
-            // Filter by year, make, and model if provided
             if (year && make && model) {
                 searchResults = searchResults.filter(part => {
                     const vehicle = part.Vehicle?.toLowerCase() || "";
@@ -80,7 +81,6 @@
                 matchedParts.push({ Description: desc, Parts: grouped[desc] });
             }
 
-            // Optional sort
             if (sortOption === "retailer") {
                 matchedParts.forEach(entry => {
                     entry.Parts.sort((a, b) => a["Parts Retailer"].localeCompare(b["Parts Retailer"]));
