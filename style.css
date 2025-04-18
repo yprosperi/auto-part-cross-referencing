@@ -17,10 +17,12 @@ body {
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-    width: 400px;
+    width: 90%;
+    max-width: 1000px;
     text-align: center;
 }
 
+/* Header */
 h1 {
     color: #333;
 }
@@ -29,22 +31,22 @@ h1 {
 .search-container {
     position: relative;
     width: 100%;
-    max-width: 400px; /* Limit the max width */
+    max-width: 400px;
     background: rgba(255, 255, 255, 0.9);
     padding: 15px;
     border-radius: 10px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
     text-align: center;
-    margin: 0 auto; /* Center align the container */
+    margin: 0 auto;
 }
 
 input, select {
-    width: 100%; /* Ensure full width of the container */
+    width: 100%;
     padding: 10px;
     margin: 10px 0;
     border: 1px solid #ccc;
     border-radius: 5px;
-    box-sizing: border-box; /* Include padding in the width */
+    box-sizing: border-box;
     text-align: center;
 }
 
@@ -63,14 +65,88 @@ button:hover {
     background: #0056b3;
 }
 
+/* Results Container - Card Layout */
 .results-container {
-    max-width: 90%;
-    width: 600px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 20px;
     max-height: 70vh;
     overflow-y: auto;
+    width: 100%;
 }
 
-/* Back Button - Merged and Fixed */
+.results-container div {
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    box-shadow: 2px 2px 6px rgba(0,0,0,0.1);
+    padding: 16px;
+    width: 100%;
+    max-width: 300px;
+    transition: transform 0.2s ease;
+    text-align: left;
+}
+
+.results-container div:hover {
+    transform: translateY(-4px);
+}
+
+.results-container h2 {
+    font-size: 18px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.results-container ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.results-container li {
+    margin-bottom: 10px;
+    line-height: 1.4;
+}
+
+/* Pagination */
+.pagination {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+}
+
+.pagination button {
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.3s, color 0.3s;
+}
+
+.pagination button:hover {
+    background-color: #007bff;
+    color: white;
+}
+
+.pagination button.active {
+    background-color: #007bff;
+    color: #fff;
+}
+
+/* Loading Spinner */
+.loading-spinner {
+    font-style: italic;
+    margin: 20px auto;
+}
+
+/* Back Button */
 .back-btn {
     display: block;
     width: fit-content;
@@ -84,11 +160,6 @@ button:hover {
     font-weight: bold;
     transition: background 0.3s;
 }
-
-.back-btn:hover {
-    background: #0056b3;
-}
-
 
 .back-btn:hover {
     background: #0056b3;
