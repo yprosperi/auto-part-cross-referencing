@@ -1,39 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Search Parts</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Search Parts</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- Include CarQuery API -->
+  <script src="https://www.carqueryapi.com/js/carquery.0.3.4.js"></script>
 </head>
 <body>
-    <div class="container">
-        <h1>Auto Parts Search</h1>
+  <div class="container">
+    <h1>Auto Parts Search</h1>
 
-        <!-- Search Box -->
-        <div class="search-container">
-            <input type="text" id="searchInput" placeholder="Enter Part Number or Description">
-            <select id="sortOption">
-                <option value="">Sort By</option>
-                <option value="manufacturer">Manufacturer</option>
-                <option value="description">Description</option>
-            </select>
-            <button onclick="searchParts()">Search</button>
-        </div>
+    <!-- Search Box -->
+    <div class="search-container">
+      <input type="text" id="searchInput" placeholder="Enter Part Number or Description" />
 
-        <!-- Loading Spinner -->
-        <div class="loading-spinner" id="loadingSpinner" style="display: none;">
-            <p>Loading results...</p>
-        </div>
+      <select id="sortOption">
+        <option value="">Sort By</option>
+        <option value="manufacturer">Manufacturer</option>
+        <option value="description">Description</option>
+      </select>
 
-        <!-- Results Box -->
-        <div class="results-box">
-            <div id="resultsContainer">
-                <!-- Search results will be displayed here -->
-            </div>
-        </div>
+      <!-- Year, Make, Model Dropdowns -->
+      <select id="yearSelect">
+        <option value="">Select Year</option>
+      </select>
+
+      <select id="makeSelect" disabled>
+        <option value="">Select Make</option>
+      </select>
+
+      <select id="modelSelect" disabled>
+        <option value="">Select Model</option>
+      </select>
+
+      <button onclick="searchParts()">Search</button>
     </div>
 
-    <script src="script.js"></script>
+    <!-- Loading Spinner -->
+    <div class="loading-spinner" id="loadingSpinner" style="display: none;">
+      <p>Loading results...</p>
+    </div>
+
+    <!-- Results Box -->
+    <div class="results-box">
+      <div id="resultsContainer">
+        <!-- Search results will be displayed here -->
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
 </body>
 </html>
