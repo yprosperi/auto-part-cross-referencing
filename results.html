@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Search Results</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
 </head>
 <body>
     <div class="container">
@@ -25,102 +26,140 @@
     </div>
 
     <script>
+    const resultsContainer = document.getElementById('resultsContainer');
+    const loadingSpinner = document.getElementById('loadingSpinner');
+    let matchedParts = [];
+    let currentPage = 1;
+    const resultsPerPage = 5;
+
+    const queryParams = new URLSearchParams(window.location.search);
+    const searchQuery = queryParams.get('query')?.toUpperCase() || "";
+    const sortOption = queryParams.get('sort') || "";
+
     fetch('https://raw.githubusercontent.com/yprosperi/auto-part-cross-referencing/main/assets/cross_reference.json')
         .then(response => {
-            if (!response.ok) {
-                throw new Error("Network response was not ok");
-            }
+            if (!response.ok) throw new Error("Network response was not ok");
             return response.json();
         })
-        .then(partsData => {
-            console.log("✅ Data Loaded Successfully:", partsData);
+        .then(data => {
+            console.log("✅ Data loaded");
 
-            let searchQuery = new URLSearchParams(window.location.search).get('query') || "";
-            searchQuery = searchQuery.toUpperCase(); // Case insensitive search
-
-            let matchedDescription = null;
-
-            // Step 1: Find the matching description for the searched part number
-            partsData.forEach(entry => {
+            // Flatten the data for fuzzy search
+            const flatParts = [];
+            data.forEach(entry => {
                 entry.Parts.forEach(part => {
-                    if (String(part["Part Number"]).toUpperCase().includes(searchQuery)) {
-                        matchedDescription = entry.Description;
-                    }
+                    flatParts.push({
+                        ...part,
+                        Description: entry.Description
+                    });
                 });
             });
 
-            console.log("🔍 Matched Description:", matchedDescription);
+            // Fuzzy search setup
+            const fuse = new Fuse(flatParts, {
+                keys: ['Part Number', 'Description', 'Vehicle', 'Parts Retailer'],
+                threshold: 0.3
+            });
 
-            let matchedParts = [];
+            const searchResults = fuse.search(searchQuery).map(result => result.item);
 
-            // Step 2: If a description was found, get ALL part numbers under that description
-            if (matchedDescription) {
-                partsData.forEach(entry => {
-                    if (entry.Description.toUpperCase() === matchedDescription.toUpperCase()) {
-                        matchedParts.push(entry);
-                    }
+            // Group results by description
+            const grouped = {};
+            searchResults.forEach(part => {
+                if (!grouped[part.Description]) {
+                    grouped[part.Description] = [];
+                }
+                grouped[part.Description].push(part);
+            });
+
+            for (let desc in grouped) {
+                matchedParts.push({
+                    Description: desc,
+                    Parts: grouped[desc]
                 });
-            } else {
-                // If no exact part number is found, search by description instead
-                partsData.forEach(entry => {
-                    if (entry.Description.toUpperCase().includes(searchQuery)) {
-                        matchedParts.push(entry);
-                    }
+            }
+
+            // Optional sort logic
+            if (sortOption === "retailer") {
+                matchedParts.forEach(entry => {
+                    entry.Parts.sort((a, b) => a["Parts Retailer"].localeCompare(b["Parts Retailer"]));
+                });
+            } else if (sortOption === "partnumber") {
+                matchedParts.forEach(entry => {
+                    entry.Parts.sort((a, b) => a["Part Number"].localeCompare(b["Part Number"]));
                 });
             }
 
-            console.log("🔍 Matched Parts:", matchedParts);
-
-            const resultsContainer = document.getElementById('resultsContainer');
-            if (!resultsContainer) {
-                console.error("❌ Error: 'resultsContainer' not found in the HTML.");
-                return;
-            }
-
-            resultsContainer.innerHTML = ''; // Clear previous results
-
-            // Ensure loadingSpinner exists before trying to hide it
-            const loadingSpinner = document.getElementById('loadingSpinner');
-            if (loadingSpinner) {
-                loadingSpinner.style.display = "none"; // Hide spinner
-            }
-
+            loadingSpinner.style.display = "none";
             if (matchedParts.length === 0) {
-                resultsContainer.innerHTML = '<p>No results found.</p>';
+                resultsContainer.innerHTML = "<p>No results found.</p>";
                 return;
             }
 
-            // Step 3: Display all part numbers under the matched description, including vehicle info
-            matchedParts.forEach(entry => {
-                const section = document.createElement('div');
-                section.innerHTML = `<h2>${entry.Description}</h2>`;
-
-                const ul = document.createElement('ul');
-                entry.Parts.forEach(part => {
-                    const li = document.createElement('li');
-                    li.innerHTML = `
-                        <strong>Part Number:</strong> ${part["Part Number"]} <br>
-                        <strong>Retailer:</strong> ${part["Parts Retailer"]} <br>
-                        <strong>Vehicle:</strong> ${part["Vehicle"]}
-                    `;
-                    ul.appendChild(li);
-                });
-
-                section.appendChild(ul);
-                resultsContainer.appendChild(section);
-            });
+            renderResultsPage(currentPage);
         })
         .catch(error => {
-            console.error('❌ Error loading JSON:', error);
-            const loadingSpinner = document.getElementById('loadingSpinner');
-            if (loadingSpinner) {
-                loadingSpinner.style.display = "none"; // Hide spinner on error
-            }
-            const resultsContainer = document.getElementById('resultsContainer');
-            if (resultsContainer) {
-                resultsContainer.innerHTML = '<p>Error loading results.</p>';
-            }
+            console.error("❌ Error loading JSON:", error);
+            if (loadingSpinner) loadingSpinner.style.display = "none";
+            if (resultsContainer) resultsContainer.innerHTML = '<p>Error loading results.</p>';
         });
+
+    function renderResultsPage(page) {
+        const startIndex = (page - 1) * resultsPerPage;
+        const endIndex = startIndex + resultsPerPage;
+        const resultsToShow = matchedParts.slice(startIndex, endIndex);
+
+        resultsContainer.innerHTML = '';
+
+        resultsToShow.forEach(entry => {
+            const section = document.createElement('div');
+            section.innerHTML = `<h2>${highlightMatch(entry.Description, searchQuery)}</h2>`;
+
+            const ul = document.createElement('ul');
+            entry.Parts.forEach(part => {
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    <strong>Part Number:</strong> ${highlightMatch(part["Part Number"], searchQuery)} <br>
+                    <strong>Retailer:</strong> ${part["Parts Retailer"] || "N/A"} <br>
+                    <strong>Vehicle:</strong> ${part["Vehicle"] || "N/A"}
+                `;
+                ul.appendChild(li);
+            });
+
+            section.appendChild(ul);
+            resultsContainer.appendChild(section);
+        });
+
+        renderPaginationControls();
+    }
+
+    function renderPaginationControls() {
+        const totalPages = Math.ceil(matchedParts.length / resultsPerPage);
+        const pagination = document.createElement('div');
+        pagination.className = "pagination";
+
+        for (let i = 1; i <= totalPages; i++) {
+            const btn = document.createElement('button');
+            btn.textContent = i;
+            if (i === currentPage) btn.classList.add("active");
+
+            btn.addEventListener("click", () => {
+                currentPage = i;
+                renderResultsPage(currentPage);
+            });
+
+            pagination.appendChild(btn);
+        }
+
+        resultsContainer.appendChild(pagination);
+    }
+
+    function highlightMatch(text, keyword) {
+        if (!text || !keyword) return text;
+        const regex = new RegExp(`(${keyword})`, "gi");
+        return text.replace(regex, '<mark>$1</mark>');
+    }
     </script>
 </body>
 </html>
+
