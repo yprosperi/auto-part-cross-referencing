@@ -24,25 +24,44 @@ fetch('https://raw.githubusercontent.com/yprosperi/auto-part-cross-referencing/m
 function searchParts() {
     const searchInputElement = document.getElementById('searchInput');
     const sortOptionElement = document.getElementById('sortOption');
+    const year = document.getElementById('yearSelect').value;
+    const make = document.getElementById('makeSelect').value;
+    const model = document.getElementById('modelSelect').value;
 
-    if (!searchInputElement) {
-        alert("Search input not found.");
-        return;
-    }
-
-    const searchQuery = searchInputElement.value.trim().toUpperCase();
+    const searchQuery = searchInputElement ? searchInputElement.value.trim().toUpperCase() : "";
     const sortOption = sortOptionElement ? sortOptionElement.value : "";
 
-    if (!searchQuery) {
-        alert("Please enter a part number or description.");
+    if (!searchQuery && (!year || !make || !model)) {
+        alert("Please enter a part number/description or select Year, Make, and Model.");
         return;
     }
 
-    // Redirect to results page with search and sort as query params
     const queryParams = new URLSearchParams({
         query: searchQuery,
-        sort: sortOption
+        sort: sortOption,
+        year,
+        make,
+        model
     });
 
     window.open(`results.html?${queryParams.toString()}`, '_blank');
 }
+
+// CarQuery vehicle dropdown logic
+const carquery = new CarQuery();
+
+function initCarQuery() {
+    carquery.init();
+    carquery.setFilters({ sold_in_us: true });
+    carquery.initYearMakeModelTrim("yearSelect", "makeSelect", "modelSelect", null);
+
+    document.getElementById("yearSelect").addEventListener("change", () => {
+        document.getElementById("makeSelect").disabled = false;
+    });
+
+    document.getElementById("makeSelect").addEventListener("change", () => {
+        document.getElementById("modelSelect").disabled = false;
+    });
+}
+
+window.addEventListener('DOMContentLoaded', initCarQuery)
