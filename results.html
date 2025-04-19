@@ -6,6 +6,15 @@
     <title>Search Results</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
+    <style>
+      .search-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -35,6 +44,9 @@
     const queryParams = new URLSearchParams(window.location.search);
     const searchQuery = queryParams.get('query')?.toUpperCase() || "";
     const sortOption = queryParams.get('sort') || "";
+    const year = queryParams.get('year')?.trim() || "";
+    const make = queryParams.get('make')?.trim().toLowerCase() || "";
+    const model = queryParams.get('model')?.trim().toLowerCase() || "";
 
     fetch('https://raw.githubusercontent.com/yprosperi/auto-part-cross-referencing/main/assets/cross_reference.json')
         .then(response => {
@@ -43,8 +55,9 @@
         })
         .then(data => {
             console.log("✅ Data loaded");
+            console.log("🔍 searchQuery:", searchQuery);
+            console.log("🛠 year/make/model:", year, make, model);
 
-            // Flatten the data for fuzzy search
             const flatParts = [];
             data.forEach(entry => {
                 entry.Parts.forEach(part => {
@@ -55,31 +68,32 @@
                 });
             });
 
-            // Fuzzy search setup
             const fuse = new Fuse(flatParts, {
                 keys: ['Part Number', 'Description', 'Vehicle', 'Parts Retailer'],
                 threshold: 0.3
             });
 
-            const searchResults = fuse.search(searchQuery).map(result => result.item);
+            let searchResults = searchQuery ? fuse.search(searchQuery).map(result => result.item) : flatParts;
 
-            // Group results by description
+            if (year && make && model) {
+                searchResults = searchResults.filter(part => {
+                    const vehicle = part.Vehicle?.toLowerCase() || "";
+                    return vehicle.includes(year) && vehicle.includes(make) && vehicle.includes(model);
+                });
+            }
+
+            console.log("🎯 Filtered results count:", searchResults.length);
+
             const grouped = {};
             searchResults.forEach(part => {
-                if (!grouped[part.Description]) {
-                    grouped[part.Description] = [];
-                }
+                if (!grouped[part.Description]) grouped[part.Description] = [];
                 grouped[part.Description].push(part);
             });
 
             for (let desc in grouped) {
-                matchedParts.push({
-                    Description: desc,
-                    Parts: grouped[desc]
-                });
+                matchedParts.push({ Description: desc, Parts: grouped[desc] });
             }
 
-            // Optional sort logic
             if (sortOption === "retailer") {
                 matchedParts.forEach(entry => {
                     entry.Parts.sort((a, b) => a["Parts Retailer"].localeCompare(b["Parts Retailer"]));
@@ -162,4 +176,3 @@
     </script>
 </body>
 </html>
-
