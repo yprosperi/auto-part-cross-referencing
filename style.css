@@ -1,7 +1,7 @@
 /* General Styles */
 body {
     font-family: Arial, sans-serif;
-    background: url('assets/auto-parts-logo-bg.webp') no-repeat center center fixed;
+    background: url('assets/car-manufacturers-bg.png') no-repeat center center fixed;
     background-size: contain; /* Use 'cover' to stretch full screen */
     background-color: #1a1a1a; /* fallback color */
     margin: 0;
