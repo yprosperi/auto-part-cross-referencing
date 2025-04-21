@@ -131,13 +131,21 @@
 
             const ul = document.createElement('ul');
             entry.Parts.forEach(part => {
-                const li = document.createElement('li');
-                li.innerHTML = `
-                    <strong>Part Number:</strong> ${highlightMatch(part["Part Number"], searchQuery)} <br>
-                    <strong>Retailer:</strong> ${part["Parts Retailer"] || "N/A"} <br>
-                    <strong>Vehicle:</strong> ${part["Vehicle"] || "N/A"}
-                `;
-                ul.appendChild(li);
+               const li = document.createElement('li');
+li.className = "result-card";
+
+const logoFile = (part["Parts Retailer"] || "").toLowerCase().replace(/\s+/g, '');
+const logoSrc = `assets/logos/${logoFile}.png`; // Ensure logo names match this format
+
+li.innerHTML = `
+    <img src="${logoSrc}" alt="${part["Parts Retailer"]}" class="retailer-logo" onerror="this.style.display='none'">
+    <div>
+        <strong>Part Number:</strong> ${highlightMatch(part["Part Number"], searchQuery)}<br>
+        <strong>Retailer:</strong> ${part["Parts Retailer"] || "N/A"}<br>
+        <strong>Vehicle:</strong> ${part["Vehicle"] || "N/A"}
+    </div>
+`;
+ul.appendChild(li);
             });
 
             section.appendChild(ul);
