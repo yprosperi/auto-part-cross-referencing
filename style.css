@@ -2,8 +2,8 @@
 body {
     font-family: Arial, sans-serif;
     background: url('assets/auto-parts-logo-bg.webp') no-repeat center center fixed;
-    background-size: contain;
-    background-color: #1a1a1a;
+    background-size: contain; /* Use 'cover' to stretch full screen */
+    background-color: #1a1a1a; /* fallback color */
     margin: 0;
     padding: 0;
     height: 100vh;
@@ -12,7 +12,6 @@ body {
     align-items: center;
     position: relative;
 }
-
 
 /* Optional: dark overlay for readability */
 body::before {
