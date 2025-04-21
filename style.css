@@ -172,3 +172,14 @@ button:hover {
 .back-btn:hover {
     background: #0056b3;
 }
+.container h1 {
+    font-size: 18px;
+    color: white;
+    text-align: center;
+    border: 2px solid black;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: rgba(0, 0, 0, 0.2); /* optional for subtle background contrast */
+    width: fit-content;
+    margin: 0 auto 20px auto;
+}
